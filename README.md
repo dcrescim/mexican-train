@@ -14,35 +14,24 @@ Winning Criteria: The bot that wins the most games in a tournament.
 
 ## Getting Started
 
-Fork this Repository: Start by forking this repository to your GitHub account.
+Clone this repository locally. Make sure you have python versions > 3. There is one file called game.py. It houses all of the game logic. At the bot you will see an implementation of a RandomBot. Read that code and the other code to understand how you should structure your bot.
 
 Understand the Rules: Make sure you are familiar with the rules of Mexican Train. Here's a link to the [rules](https://www.mastersofgames.com/rules/mexican-train-dominoes-rules.htm).
 
-Review the Bot Interface: Check out the BotInterface.md file in this repository. It details how your bot should interact with the game engine.
+Test Your Bot: At the bottom of that file you will see me create a game with 4 random bots. Feel free to play your bot against itself or the random bot to see which strategies work the best. 
 
-Write Your Bot: Code your bot in your preferred language. Make sure it adheres to the interface specified.
-
-Test Your Bot: Use the testing tools provided in the TestSuite folder to make sure your bot plays correctly.
-
-Submit Your Bot: Once you're happy with your bot, submit it via a pull request to this repository.
+The competition starts January 1st, and ends on January 17th.
 
 ## Rules and Guidelines
 
 Fair Play: No hacking or unfair tactics. The goal is to have fun and learn.
 Collaboration: Feel free to collaborate, but each submission should be primarily your own work.
-Code of Conduct: Be respectful and constructive in your interactions within this project.
-
-## Resources
-
-Bot Development Guide: Check out BotDevelopmentGuide.md for tips and tricks on bot development.
-Sample Bot: Explore SampleBot directory for a basic bot implementation.
-Discussion Forum: Use the Issues section of this repository for discussions and questions.
 
 ## Timeline
 
-Start Date: [Start Date]
-Submission Deadline: [Deadline Date]
-Tournament Date: [Tournament Date]
+Start Date: January 1st
+Submission Deadline: January 14th
+Tournament Date: January 18th
 
 ## Have Fun!
 
