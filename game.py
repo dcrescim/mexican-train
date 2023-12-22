@@ -1,5 +1,6 @@
 import random
 import string
+from abc import ABC, abstractmethod
 from typing import Optional, List, Tuple, Any
 
 Domino = Tuple[int, int]
@@ -426,12 +427,34 @@ class MexicanTrain:
         )
 
 
-class RandomPlayerAgent:
-    def __init__(self):
+# Mexican Train Bot is a stub class that all player agents should inherit from
+# it has a play method that takes in a player, board, is_first, and piece_counts
+class MexicanTrainBot(ABC):
+    def __init__(self, name: Optional[str]):
+        if name is None:
+            self.name = random_string()
+        else:
+            self.name = name
+
+    @abstractmethod
+    def play(
+        self,
+        player: Player,
+        board: Board,
+        is_first: bool,
+        piece_counts: List[Tuple[str, int]],
+    ) -> Optional[Move]:
         pass
 
+
+# This is a random agent that plays a random move
+class RandomPlayerAgent(MexicanTrainBot):
     def play(
-        self, player: Player, board: Board, is_first, piece_counts
+        self,
+        player: Player,
+        board: Board,
+        is_first: bool,
+        piece_counts: List[Tuple[str, int]],
     ) -> Optional[Move]:
         choices = board.get_choices(player)
         if len(choices) == 0:
