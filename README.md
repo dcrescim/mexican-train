@@ -16,7 +16,7 @@ Winning Criteria: The bot that wins the most games in a tournament.
 
 Fork this Repository: Start by forking this repository to your GitHub account.
 
-Understand the Rules: Make sure you are familiar with the rules of Mexican Train. Here's a link to the rules.
+Understand the Rules: Make sure you are familiar with the rules of Mexican Train. Here's a link to the [rules](https://www.mastersofgames.com/rules/mexican-train-dominoes-rules.htm).
 
 Review the Bot Interface: Check out the BotInterface.md file in this repository. It details how your bot should interact with the game engine.
 
