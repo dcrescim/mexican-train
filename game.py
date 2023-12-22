@@ -1,6 +1,7 @@
 import random
 import string
 from typing import Optional, List, Tuple, Any
+
 Domino = Tuple[int, int]
 Continuation = Tuple[int, Optional[str]]
 Move = Tuple[List[Domino], Optional[str]]
@@ -23,10 +24,10 @@ def shift_arr(arr: List[Any], shift) -> List[Any]:
 
 
 def random_string(length=12) -> str:
-    return ''.join(random.choice(string.ascii_lowercase) for i in range(length))
+    return "".join(random.choice(string.ascii_lowercase) for i in range(length))
 
 
-class Player():
+class Player:
     def __init__(self, dominoes: List[Domino] = []):
         self.id = random_string(6)
         self.dominoes = dominoes
@@ -63,7 +64,7 @@ class Player():
         return str({"id": self.id, "dominoes": self.dominoes})
 
 
-class Train():
+class Train:
     def __init__(self, dominoes=[], player_id=None, is_open=False):
         self.id = random_string()
         if len(dominoes) == 0:
@@ -80,7 +81,8 @@ class Train():
             self.dominoes.append((domino[1], domino[0]))
         else:
             raise ValueError(
-                "Cannot add domino {} to train {}".format(domino, self.dominoes))
+                "Cannot add domino {} to train {}".format(domino, self.dominoes)
+            )
 
     def add_dominoes(self, dominoes: List[Domino]) -> None:
         for domino in dominoes:
@@ -100,13 +102,27 @@ class Train():
         return self.dominoes[-1][1]
 
     def __str__(self):
-        return str({"id": self.id, "dominoes": self.dominoes, "is_open": self.is_open, "player_id": self.player_id})
+        return str(
+            {
+                "id": self.id,
+                "dominoes": self.dominoes,
+                "is_open": self.is_open,
+                "player_id": self.player_id,
+            }
+        )
 
     def __repr__(self):
-        return str({"id": self.id, "dominoes": self.dominoes, "is_open": self.is_open, "player_id": self.player_id})
+        return str(
+            {
+                "id": self.id,
+                "dominoes": self.dominoes,
+                "is_open": self.is_open,
+                "player_id": self.player_id,
+            }
+        )
 
 
-class Board():
+class Board:
     def __init__(self, trains=[], engine=None):
         self.trains = trains
         self.engine = engine
@@ -130,9 +146,11 @@ class Board():
                 return train
         return None
 
-    def make_starting_choices_for_player(self, continuations: List[Continuation], player: Player) -> List[Move]:
+    def make_starting_choices_for_player(
+        self, continuations: List[Continuation], player: Player
+    ) -> List[Move]:
         all_starter_choices = []
-        for (end_val, train_id) in continuations:
+        for end_val, train_id in continuations:
             for domino in player.dominoes:
                 if domino[0] == end_val or domino[1] == end_val:
                     # A possible starting move only calculates which dominoes can
@@ -186,7 +204,7 @@ class Board():
         return str({"trains": self.trains, "engine": self.engine})
 
 
-class MexicanTrain():
+class MexicanTrain:
     def __init__(self, random_seed: Optional[int] = None) -> None:
         self.players: List[Player] = []
         self.board: Board = Board(trains=[], engine=None)
@@ -236,11 +254,13 @@ class MexicanTrain():
         if len(dominoes) == 1:
             return True
         for i in range(len(dominoes) - 1):
-            if dominoes[i][1] != dominoes[i+1][0]:
+            if dominoes[i][1] != dominoes[i + 1][0]:
                 return False
         return True
 
-    def check_valid_move(self, player: Player, move: Optional[Move], is_first: bool = False) -> bool:
+    def check_valid_move(
+        self, player: Player, move: Optional[Move], is_first: bool = False
+    ) -> bool:
         # Todo there are cases where this isn't the case
         # Like where you are forced to play a double if you have one
         if move is None:
@@ -259,9 +279,11 @@ class MexicanTrain():
             return False
 
         first_domino_move = append_dominoes[0]
-        for (choice_dominoes, choice_train_id) in choices:
+        for choice_dominoes, choice_train_id in choices:
             first_domino_choice = choice_dominoes[0]
-            if train_id == choice_train_id and canonical(first_domino_move) == canonical(first_domino_choice):
+            if train_id == choice_train_id and canonical(
+                first_domino_move
+            ) == canonical(first_domino_choice):
                 return True
         return False
 
@@ -275,12 +297,14 @@ class MexicanTrain():
                 # You have a train, so make the Mexican Train
                 if train.player_id == player.id:
                     self.board.trains.append(
-                        Train(dominoes=append_dominoes, player_id=None))
+                        Train(dominoes=append_dominoes, player_id=None)
+                    )
                     player.remove_dominoes(append_dominoes)
                     return
             # You don't have a train, so make a personal one
             self.board.trains.append(
-                Train(dominoes=append_dominoes, player_id=player.id))
+                Train(dominoes=append_dominoes, player_id=player.id)
+            )
             player.remove_dominoes(append_dominoes)
 
         for train in self.board.trains:
@@ -320,7 +344,9 @@ class MexicanTrain():
             self.add_to_train(player, move)
             return True
 
-    def handle_player_turn(self, player: Player, agent: Any, piece_counts: List[Tuple[str, int]]) -> None:
+    def handle_player_turn(
+        self, player: Player, agent: Any, piece_counts: List[Tuple[str, int]]
+    ) -> None:
         # Get agent move
         move = agent.play(player, self.board, self.is_first, piece_counts)
 
@@ -343,7 +369,6 @@ class MexicanTrain():
             self.perform_move(player, move)
 
     def play(self):
-
         self.deal()
         found_it = self.set_engine()
 
@@ -375,18 +400,39 @@ class MexicanTrain():
         return cur_player
 
     def __str__(self):
-        return str({"board": self.board, "players": self.players, "turn": self.turn, "turn_count": self.turn_count, "player_count": self.player_count, "random_seed": self.random_seed, "dominoes": self.dominoes})
+        return str(
+            {
+                "board": self.board,
+                "players": self.players,
+                "turn": self.turn,
+                "turn_count": self.turn_count,
+                "player_count": self.player_count,
+                "random_seed": self.random_seed,
+                "dominoes": self.dominoes,
+            }
+        )
 
     def __repr__(self):
-        return str({"board": self.board, "players": self.players, "turn": self.turn, "turn_count": self.turn_count, "player_count": self.player_count, "random_seed": self.random_seed, "dominoes": self.dominoes})
+        return str(
+            {
+                "board": self.board,
+                "players": self.players,
+                "turn": self.turn,
+                "turn_count": self.turn_count,
+                "player_count": self.player_count,
+                "random_seed": self.random_seed,
+                "dominoes": self.dominoes,
+            }
+        )
 
 
-class RandomPlayerAgent():
+class RandomPlayerAgent:
     def __init__(self):
         pass
 
-    def play(self, player: Player, board: Board, is_first, piece_counts) -> Optional[Move]:
-
+    def play(
+        self, player: Player, board: Board, is_first, piece_counts
+    ) -> Optional[Move]:
         choices = board.get_choices(player)
         if len(choices) == 0:
             return None
