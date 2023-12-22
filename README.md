@@ -9,7 +9,7 @@ Mexican Train is a domino game, traditionally played with family and friends, bu
 ## Challenge Overview
 
 Task: Write a bot that can play Mexican Train.
-Language: Any programming language you're comfortable with.
+Language: Python
 Winning Criteria: The bot that wins the most games in a tournament.
 
 ## Getting Started
