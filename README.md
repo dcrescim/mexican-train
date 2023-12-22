@@ -4,7 +4,7 @@ Hello, family and friends! Welcome to our unique and exciting project: The Mexic
 
 ## What is Mexican Train?
 
-Mexican Train is a domino game, traditionally played with family and friends, but also can be enjoyed with enemies and some ghosts. The objective is to build a 'train' of dominoes while trying to get rid of all your pieces. It's fun, strategic, and now, it's going to be a battleground for our bots!
+Mexican Train is a domino game, traditionally played with family and friends, but also can be enjoyed with enemies. The objective is to build a 'train' of dominoes while trying to get rid of all your pieces. It's fun, strategic, and now, it's going to be a battleground for our bots!
 
 ## Challenge Overview
 
