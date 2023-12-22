@@ -466,8 +466,8 @@ class RandomPlayerAgent(MexicanTrainBot):
 
 for i in range(1000):
     mexican_train = MexicanTrain()
-    mexican_train.add_player(RandomPlayerAgent())
-    mexican_train.add_player(RandomPlayerAgent())
-    mexican_train.add_player(RandomPlayerAgent())
-    mexican_train.add_player(RandomPlayerAgent())
+    mexican_train.add_player(RandomPlayerAgent('John'))
+    mexican_train.add_player(RandomPlayerAgent('Jacob'))
+    mexican_train.add_player(RandomPlayerAgent('Jingleheimer'))
+    mexican_train.add_player(RandomPlayerAgent('Schmidt'))
     mexican_train.play()
