@@ -1,32 +1,49 @@
 import random
 import string
+from abc import ABC, abstractmethod
 from typing import Optional, List, Tuple, Any
+
 Domino = Tuple[int, int]
 Continuation = Tuple[int, Optional[str]]
 Move = Tuple[List[Domino], Optional[str]]
 
 
 def canonical(domino: Domino) -> Domino:
+    """
+    Returns the domino in canonical form, i.e. (0, 1) instead of (1, 0)
+    so that every domino has a unique representation.
+    """
     return (min(domino), max(domino))
 
 
-def make_all_dominoes() -> List[Domino]:
-    dominoes = []
-    for i in range(0, 12):
-        for j in range(i, 12):
+def make_all_dominoes(max_num_dots: int = 12) -> List[Domino]:
+    """
+    Returns a list of all of the dominos in a set. The max_num_dots
+    parameter determines the maximum number of dots on a domino within
+    the set, and therefore the size of the set.
+    """
+    dominoes: List[Domino] = []
+    for i in range(0, max_num_dots + 1):
+        for j in range(i, max_num_dots + 1):
             dominoes.append((i, j))
     return dominoes
 
 
-def shift_arr(arr: List[Any], shift) -> List[Any]:
-    return arr[shift:] + arr[:shift]
+def shift_arr(arr: List[Any], n: int) -> List[Any]:
+    """
+    Shifts the first n elements of an array to the end.
+    """
+    return arr[n:] + arr[:n]
 
 
-def random_string(length=12) -> str:
-    return ''.join(random.choice(string.ascii_lowercase) for i in range(length))
+def random_string(length: int = 12) -> str:
+    """
+    Returns a random string of lowercase letters of the given length.
+    """
+    return "".join(random.choice(string.ascii_lowercase) for _ in range(length))
 
 
-class Player():
+class Player:
     def __init__(self, dominoes: List[Domino] = []):
         self.id = random_string(6)
         self.dominoes = dominoes
@@ -44,6 +61,10 @@ class Player():
         return highest_double
 
     def remove_domino(self, domino: Domino) -> None:
+        """
+        Removes the given domino from the player's hand. If the domino
+        is not in the player's hand, raises a ValueError.
+        """
         if domino in self.dominoes:
             self.dominoes.remove(domino)
             return
@@ -53,6 +74,12 @@ class Player():
         raise ValueError("Tried to remove domino that didn't exist")
 
     def remove_dominoes(self, dominoes: List[Domino]) -> None:
+        """
+        Removes the given list of dominoes from the player's hand.
+        Will raise a ValueError if any of the dominoes are not in
+        the player's hand, but will remove all dominoes up to the
+        point of the error.
+        """
         for domino in dominoes:
             self.remove_domino(domino)
 
@@ -63,8 +90,13 @@ class Player():
         return str({"id": self.id, "dominoes": self.dominoes})
 
 
-class Train():
-    def __init__(self, dominoes=[], player_id=None, is_open=False):
+class Train:
+    def __init__(
+        self,
+        dominoes: List[Domino] = [],
+        player_id: Optional[str] = None,
+        is_open: bool = False,
+    ):
         self.id = random_string()
         if len(dominoes) == 0:
             raise ValueError("Train must have at least one domino")
@@ -72,46 +104,63 @@ class Train():
         self.is_open = is_open
         self.player_id = player_id
 
-    def add_domino(self, domino: Domino) -> None:
+    def add_domino(self, new_domino: Domino) -> None:
         last_domino = self.dominoes[-1]
-        if last_domino[1] == domino[0]:
-            self.dominoes.append(domino)
-        elif last_domino[1] == domino[1]:
-            self.dominoes.append((domino[1], domino[0]))
+        if last_domino[1] == new_domino[0]:
+            self.dominoes.append(new_domino)
+        elif last_domino[1] == new_domino[1]:
+            self.dominoes.append((new_domino[1], new_domino[0]))
         else:
             raise ValueError(
-                "Cannot add domino {} to train {}".format(domino, self.dominoes))
+                "Cannot add domino {} to train {}".format(new_domino, self.dominoes)
+            )
 
     def add_dominoes(self, dominoes: List[Domino]) -> None:
         for domino in dominoes:
             self.add_domino(domino)
 
-    def is_open_for_player(self, player_id):
-        return self.player_id is None or self.player_id == player_id or self.is_open
+    def is_open_for_player(self, player_id: str) -> bool:
+        return (
+            (self.player_id is None) or (self.player_id == player_id) or (self.is_open)
+        )
 
     def ends_in_double(self) -> bool:
         if len(self.dominoes) == 0:
             return False
         return self.dominoes[-1][0] == self.dominoes[-1][1]
 
-    def get_end_value(self) -> Continuation:
+    def get_end_value(self) -> int:
         if len(self.dominoes) == 0:
             raise ValueError("Train has no dominoes")
         return self.dominoes[-1][1]
 
     def __str__(self):
-        return str({"id": self.id, "dominoes": self.dominoes, "is_open": self.is_open, "player_id": self.player_id})
+        return str(
+            {
+                "id": self.id,
+                "dominoes": self.dominoes,
+                "is_open": self.is_open,
+                "player_id": self.player_id,
+            }
+        )
 
     def __repr__(self):
-        return str({"id": self.id, "dominoes": self.dominoes, "is_open": self.is_open, "player_id": self.player_id})
+        return str(
+            {
+                "id": self.id,
+                "dominoes": self.dominoes,
+                "is_open": self.is_open,
+                "player_id": self.player_id,
+            }
+        )
 
 
-class Board():
-    def __init__(self, trains=[], engine=None):
+class Board:
+    def __init__(self, trains: List[Train] = [], engine: Optional[Domino] = None):
         self.trains = trains
         self.engine = engine
 
-    def get_open_trains(self, player_id) -> List[Train]:
+    def get_open_trains(self, player_id: str) -> List[Train]:
         return [train for train in self.trains if train.is_open_for_player(player_id)]
 
     def open_train(self, player: Player) -> None:
@@ -130,9 +179,11 @@ class Board():
                 return train
         return None
 
-    def make_starting_choices_for_player(self, continuations: List[Continuation], player: Player) -> List[Move]:
-        all_starter_choices = []
-        for (end_val, train_id) in continuations:
+    def make_starting_choices_for_player(
+        self, continuations: List[Continuation], player: Player
+    ) -> List[Move]:
+        all_starter_choices: List[Move] = []
+        for end_val, train_id in continuations:
             for domino in player.dominoes:
                 if domino[0] == end_val or domino[1] == end_val:
                     # A possible starting move only calculates which dominoes can
@@ -143,7 +194,7 @@ class Board():
                         new_domino = domino
                     else:
                         new_domino = (domino[1], domino[0])
-                    possible_starting_move = ([new_domino], train_id)
+                    possible_starting_move: Move = ([new_domino], train_id)
                     all_starter_choices.append(possible_starting_move)
         return all_starter_choices
 
@@ -152,21 +203,23 @@ class Board():
         if double_train is not None:
             return [(double_train.get_end_value(), double_train.id)]
 
-        choices = []
-        has_train = False
-        has_mexican_train = False
+        choices: List[Continuation] = []
+        player_has_train = False
+        board_has_communal_train = False
         for train in self.trains:
             if train.player_id == player.id:
-                has_train = True
+                player_has_train = True
                 choices.append((train.get_end_value(), train.id))
             if train.player_id is None:
-                has_mexican_train = True
+                board_has_communal_train = True
                 choices.append((train.get_end_value(), train.id))
             if train.is_open:
                 choices.append((train.get_end_value(), train.id))
 
-        # Make a new train
-        if not has_train or (has_train and not has_mexican_train):
+        # Record whether the player can make a new train
+        if not player_has_train or (player_has_train and not board_has_communal_train):
+            if self.engine is None:
+                raise Exception("No engine in the train")
             choices.append((self.engine[1], None))
 
         return list(set(choices))
@@ -186,7 +239,7 @@ class Board():
         return str({"trains": self.trains, "engine": self.engine})
 
 
-class MexicanTrain():
+class MexicanTrain:
     def __init__(self, random_seed: Optional[int] = None) -> None:
         self.players: List[Player] = []
         self.board: Board = Board(trains=[], engine=None)
@@ -195,11 +248,11 @@ class MexicanTrain():
         self.turn: int = 0
         self.turn_count: int = 0
         self.player_count: int = 0
-        self.player_agents: List[Any] = []
+        self.player_agents: List[MexicanTrainBot] = []
         self.random_seed: Optional[int] = random_seed
         self.dominoes: List[Domino] = make_all_dominoes()
 
-    def add_player(self, agent_class) -> None:
+    def add_player(self, agent_class: "MexicanTrainBot") -> None:
         self.player_count += 1
         self.player_agents.append(agent_class)
         self.players.append(Player(dominoes=[]))
@@ -236,11 +289,13 @@ class MexicanTrain():
         if len(dominoes) == 1:
             return True
         for i in range(len(dominoes) - 1):
-            if dominoes[i][1] != dominoes[i+1][0]:
+            if dominoes[i][1] != dominoes[i + 1][0]:
                 return False
         return True
 
-    def check_valid_move(self, player: Player, move: Optional[Move], is_first: bool = False) -> bool:
+    def check_valid_move(
+        self, player: Player, move: Optional[Move], is_first: bool = False
+    ) -> bool:
         # Todo there are cases where this isn't the case
         # Like where you are forced to play a double if you have one
         if move is None:
@@ -259,9 +314,11 @@ class MexicanTrain():
             return False
 
         first_domino_move = append_dominoes[0]
-        for (choice_dominoes, choice_train_id) in choices:
+        for choice_dominoes, choice_train_id in choices:
             first_domino_choice = choice_dominoes[0]
-            if train_id == choice_train_id and canonical(first_domino_move) == canonical(first_domino_choice):
+            if train_id == choice_train_id and canonical(
+                first_domino_move
+            ) == canonical(first_domino_choice):
                 return True
         return False
 
@@ -275,12 +332,14 @@ class MexicanTrain():
                 # You have a train, so make the Mexican Train
                 if train.player_id == player.id:
                     self.board.trains.append(
-                        Train(dominoes=append_dominoes, player_id=None))
+                        Train(dominoes=append_dominoes, player_id=None)
+                    )
                     player.remove_dominoes(append_dominoes)
                     return
             # You don't have a train, so make a personal one
             self.board.trains.append(
-                Train(dominoes=append_dominoes, player_id=player.id))
+                Train(dominoes=append_dominoes, player_id=player.id)
+            )
             player.remove_dominoes(append_dominoes)
 
         for train in self.board.trains:
@@ -320,7 +379,9 @@ class MexicanTrain():
             self.add_to_train(player, move)
             return True
 
-    def handle_player_turn(self, player: Player, agent: Any, piece_counts: List[Tuple[str, int]]) -> None:
+    def handle_player_turn(
+        self, player: Player, agent: Any, piece_counts: List[Tuple[str, int]]
+    ) -> None:
         # Get agent move
         move = agent.play(player, self.board, self.is_first, piece_counts)
 
@@ -343,7 +404,6 @@ class MexicanTrain():
             self.perform_move(player, move)
 
     def play(self):
-
         self.deal()
         found_it = self.set_engine()
 
@@ -375,18 +435,61 @@ class MexicanTrain():
         return cur_player
 
     def __str__(self):
-        return str({"board": self.board, "players": self.players, "turn": self.turn, "turn_count": self.turn_count, "player_count": self.player_count, "random_seed": self.random_seed, "dominoes": self.dominoes})
+        return str(
+            {
+                "board": self.board,
+                "players": self.players,
+                "turn": self.turn,
+                "turn_count": self.turn_count,
+                "player_count": self.player_count,
+                "random_seed": self.random_seed,
+                "dominoes": self.dominoes,
+            }
+        )
 
     def __repr__(self):
-        return str({"board": self.board, "players": self.players, "turn": self.turn, "turn_count": self.turn_count, "player_count": self.player_count, "random_seed": self.random_seed, "dominoes": self.dominoes})
+        return str(
+            {
+                "board": self.board,
+                "players": self.players,
+                "turn": self.turn,
+                "turn_count": self.turn_count,
+                "player_count": self.player_count,
+                "random_seed": self.random_seed,
+                "dominoes": self.dominoes,
+            }
+        )
 
 
-class RandomPlayerAgent():
-    def __init__(self):
+# Mexican Train Bot is a stub class that all player agents should inherit from
+# it has a play method that takes in a player, board, is_first, and piece_counts
+class MexicanTrainBot(ABC):
+    def __init__(self, name: Optional[str]):
+        if name is None:
+            self.name = random_string()
+        else:
+            self.name = name
+
+    @abstractmethod
+    def play(
+        self,
+        player: Player,
+        board: Board,
+        is_first: bool,
+        piece_counts: List[Tuple[str, int]],
+    ) -> Optional[Move]:
         pass
 
-    def play(self, player: Player, board: Board, is_first, piece_counts) -> Optional[Move]:
 
+# This is a random agent that plays a random move
+class RandomPlayerAgent(MexicanTrainBot):
+    def play(
+        self,
+        player: Player,
+        board: Board,
+        is_first: bool,
+        piece_counts: List[Tuple[str, int]],
+    ) -> Optional[Move]:
         choices = board.get_choices(player)
         if len(choices) == 0:
             return None
@@ -397,8 +500,8 @@ class RandomPlayerAgent():
 
 for i in range(1000):
     mexican_train = MexicanTrain()
-    mexican_train.add_player(RandomPlayerAgent())
-    mexican_train.add_player(RandomPlayerAgent())
-    mexican_train.add_player(RandomPlayerAgent())
-    mexican_train.add_player(RandomPlayerAgent())
+    mexican_train.add_player(RandomPlayerAgent("John"))
+    mexican_train.add_player(RandomPlayerAgent("Jacob"))
+    mexican_train.add_player(RandomPlayerAgent("Jingleheimer"))
+    mexican_train.add_player(RandomPlayerAgent("Schmidt"))
     mexican_train.play()
