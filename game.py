@@ -182,6 +182,11 @@ class Board:
                 train.is_open = False
 
     def get_train_with_double(self) -> Optional[Train]:
+        """
+        Returns the train that ends in a double if one exists, otherwise
+        returns None. Also updates the board's `contains_unfulfilled_double`
+        and `unfulfilled_double_value` fields if necessary.
+        """
         for train in self.trains:
             if train.ends_in_double():
                 return train
@@ -190,6 +195,18 @@ class Board:
     def make_starting_choices_for_player(
         self, continuations: List[Continuation], player: Player
     ) -> List[Move]:
+        """
+        Returns a list of all possible starting dominos and corresponding
+        train ids for the player's current turn based on a list of
+        continuations (playable numbers, and the corresponding open train
+        that ends in said number) received as input.
+
+        The player's actual move may be a list of dominoes if they are
+        playing a double or if it is their first turn, but this method
+        only returns the first domino of each possible move. Any valid
+        move the player makes MUST either be in this list or start with a
+        domino/train combination in this list.
+        """
         all_starter_choices: List[Move] = []
         for end_val, train_id in continuations:
             for domino in player.dominoes:
@@ -207,6 +224,11 @@ class Board:
         return all_starter_choices
 
     def get_continuations(self, player: Player) -> List[Continuation]:
+        """
+        Returns a list of all possible continuations (playable numbers,
+        and the corresponding open train that ends in said number) for
+        the player's current turn.
+        """
         double_train = self.get_train_with_double()
         if double_train is not None:
             return [(double_train.get_end_value(), double_train.id)]
@@ -233,6 +255,16 @@ class Board:
         return list(set(choices))
 
     def get_choices(self, player: Player) -> List[Move]:
+        """
+        Returns a list of all possible starting dominos and corresponding
+        train ids for the player's current turn.
+
+        The player's actual move may be a list of dominoes if they are
+        playing a double or if it is their first turn, but this method only
+        returns the first domino of each possible move. Any valid move the
+        player makes MUST either be in this list or start with a
+        domino/train combination in this list.
+        """
         # print("player", player)
         continuations = self.get_continuations(player)
         # print("continuations", continuations)
@@ -302,16 +334,25 @@ class MexicanTrain:
         return True
 
     def check_valid_move(
-        self, player: Player, move: Optional[Move], is_first: bool = False
+        self, player: Player, proposed_move: Optional[Move], is_first: bool = False
     ) -> bool:
-        # Todo there are cases where this isn't the case
-        # Like where you are forced to play a double if you have one
-        if move is None:
+        """
+        Checks if the proposed move is valid.
+
+        If the proposed move is None, checks if the player is allowed
+        to pass. If the proposed move is not None, checks if the
+        player is allowed to make the proposed move.
+        """
+        if proposed_move is None:
+            # add logic for checking if the player is allowed to pass based on
+            # whether or not they have to fulfill a double
+            # the player is allowed to pass if there's no obligation to fulfill
+            # a double
             return True
 
         choices = self.board.get_choices(player)
 
-        (append_dominoes, train_id) = move
+        (append_dominoes, train_id) = proposed_move
         if not self.valid_domino_sequence(append_dominoes):
             return False
 
@@ -331,6 +372,9 @@ class MexicanTrain:
         return False
 
     def add_to_train(self, player: Player, move: Move) -> None:
+        """
+        Adds the dominoes in the move to the train specified by the move.
+        """
         (append_dominoes, train_id) = move
 
         # You wish to make a new Train
@@ -359,6 +403,11 @@ class MexicanTrain:
                 return
 
     def set_engine(self) -> bool:
+        """
+        Sets the first domino of the whole game (the train engine)
+        equal to highest double of the first player who has at least
+        one double. If no player has a double, returns False.
+        """
         # Check for highest doubles
         for i in range(len(self.players)):
             player = self.players[i]
