@@ -43,6 +43,14 @@ def random_string(length: int = 12) -> str:
     return "".join(random.choice(string.ascii_lowercase) for _ in range(length))
 
 
+def is_double(domino: Domino) -> bool:
+    """
+    Returns True if the given domino is a double, i.e. if both sides
+    have the same number of dots.
+    """
+    return domino[0] == domino[1]
+
+
 class Player:
     def __init__(self, dominoes: List[Domino] = []):
         self.id = random_string(6)
