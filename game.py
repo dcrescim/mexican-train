@@ -379,22 +379,22 @@ class MexicanTrain:
             # a double
             return True
 
-        choices = self.board.get_choices(player)
+        allowed_choices = self.board.get_choices(player)
 
-        (append_dominoes, train_id) = proposed_move
-        if not self.valid_domino_sequence(append_dominoes):
+        (proposed_dominoes, proposed_train_id) = proposed_move
+        if not self.valid_domino_sequence(proposed_dominoes):
             return False
 
-        if len(append_dominoes) == 0:
+        if len(proposed_dominoes) == 0:
             return False
 
-        if len(append_dominoes) > 1 and not is_first:
+        if len(proposed_dominoes) > 1 and not is_first:
             return False
 
-        first_domino_move = append_dominoes[0]
-        for choice_dominoes, choice_train_id in choices:
-            first_domino_choice = choice_dominoes[0]
-            if train_id == choice_train_id and canonical(
+        first_domino_move = proposed_dominoes[0]
+        for allowed_first_dominoes, open_train_id in allowed_choices:
+            first_domino_choice = allowed_first_dominoes[0]
+            if proposed_train_id == open_train_id and canonical(
                 first_domino_move
             ) == canonical(first_domino_choice):
                 return True
@@ -494,7 +494,10 @@ class MexicanTrain:
             return True
 
     def handle_player_turn(
-        self, player: Player, agent: Any, piece_counts: List[Tuple[str, int]]
+        self,
+        player: Player,
+        agent: "MexicanTrainBot",
+        piece_counts: List[Tuple[str, int]],
     ) -> None:
         # Get agent move
         move = agent.play(player, self.board, self.is_first, piece_counts)
