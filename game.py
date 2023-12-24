@@ -346,7 +346,7 @@ class MexicanTrain:
                 return False
         return True
 
-    def check_if_player_can_fullfill_double(self, player: Player) -> bool:
+    def check_if_player_can_fulfill_double(self, player: Player) -> bool:
         """
         Checks if the player has a domino that can fulfill the double
         currently on the board.
