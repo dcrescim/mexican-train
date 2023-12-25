@@ -284,8 +284,8 @@ class Board:
         NOTE: This method may return moves that start with a double that the
         player is capable of fulfilling. Note that this method only returns the
         first domino of each possible move, and if the player tries to play a
-        double that they can fulfill, an exception will be raised in the
-        `handle_player_turn` method of the `MexicanTrain` class.
+        double that they can fulfill (without fulfilling it), an exception will
+        be raised in the `handle_player_turn` method of the `MexicanTrain` class.
         """
         # print("player", player)
         continuations = self.get_continuations(player)
