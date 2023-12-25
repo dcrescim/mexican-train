@@ -404,6 +404,11 @@ class MexicanTrain:
     def update_board_unfulfilled_double_status(
         self, move: Move, new_train_id: Optional[str]
     ) -> None:
+        """
+        Updates the board's `contains_unfulfilled_double`,
+        `unfulfilled_double_value`, and `unfulfilled_double_train_id` fields
+        based on the given move that was just made.
+        """
         train_ends_in_double_after_move = is_double(move[0][-1])
         if train_ends_in_double_after_move:
             train_id_with_double = move[1]
