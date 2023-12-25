@@ -373,10 +373,11 @@ class MexicanTrain:
         player is allowed to make the proposed move.
         """
         if proposed_move is None:
-            # add logic for checking if the player is allowed to pass based on
-            # whether or not they have to fulfill a double
-            # the player is allowed to pass if there's no obligation to fulfill
-            # a double
+            if self.board.contains_unfulfilled_double:
+                if self.check_if_player_can_fulfill_double(player):
+                    # they can't pass if they have a domino that can fulfill
+                    # the double
+                    return False
             return True
 
         allowed_choices = self.board.get_choices(player)
