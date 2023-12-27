@@ -7,6 +7,21 @@ Domino = Tuple[int, int]
 """A domino represented as a tuple of two integers indicating the values on each half."""
 
 
+class GameLogEntry(TypedDict):
+    """
+    Typed dictionary representing an entry in the game log.
+    """
+
+    row_id: int  # integer unique to each row
+    turn_id: int  # integer unique to each turn
+    player_id: str  # string unique to each player equal to the player's id
+    domino_played: Domino | None  # tuple of two integers indicating the values on each half of the domino
+    train_played_on: str | None  # string unique to each train equal to the train's id
+    is_new_personal_train: bool | None  # boolean indicating whether the train played on was a new personal train
+    is_new_mexican_train: bool | None  # boolean indicating whether the train played on was a new mexican train
+    picked_up_domino: bool  # boolean indicating whether the player picked up a domino from the boneyard
+
+
 class Continuation(TypedDict):
     """
     Typed dictionary representing the information needed to continue a train in the game.
@@ -1119,6 +1134,7 @@ class MexicanTrain:
         player_agents (List[MexicanTrainBot]): The agents for each player.
         random_seed (Optional[int]): The random seed for the game.
         dominoes (List[Domino]): The dominoes in the game.
+        game_log (List[GameLogEntry]): The log of the game.
     """
 
     def __init__(self, random_seed: Optional[int] = None) -> None:
@@ -1138,6 +1154,7 @@ class MexicanTrain:
         self.player_agents: List[MexicanTrainBot] = []
         self.random_seed: Optional[int] = random_seed
         self.dominoes: List[Domino] = make_all_dominoes()
+        self.game_log: List[GameLogEntry] = []
 
     def add_player(self, agent_class: "MexicanTrainBot") -> None:
         """
@@ -1484,12 +1501,43 @@ class MexicanTrain:
         """
         if move is None or move.sequences_to_play is None:
             self.pickup(player)
+            # update the game log
+            new_game_log_entry: GameLogEntry = {
+                "row_id": len(self.game_log) + 1,
+                "turn_id": self.turn_count,
+                "player_id": player.id,
+                "domino_played": None,
+                "train_played_on": None,
+                "is_new_personal_train": None,
+                "is_new_mexican_train": None,
+                "picked_up_domino": True,
+            }
+            self.game_log.append(new_game_log_entry)
+            # open the player's train because they passed
             self.board.open_train(player)
             # return False because the player gets to play again after picking
             # up a domino
             return False
         else:
             possible_new_train_id = self.add_to_trains(player, move)
+            # update the game log
+            for sequence in move.sequences_to_play:
+                for domino in sequence["dominoes"]:
+                    new_game_log_entry: GameLogEntry = {
+                        "row_id": len(self.game_log) + 1,
+                        "turn_id": self.turn_count,
+                        "player_id": player.id,
+                        "domino_played": domino,
+                        "train_played_on": sequence["train_id"]
+                        if sequence["train_id"] is not None
+                        else possible_new_train_id,
+                        "is_new_personal_train": sequence["train_id"] is None
+                        and not sequence["starting_mexican_train"],
+                        "is_new_mexican_train": sequence["train_id"] is None
+                        and sequence["starting_mexican_train"],
+                        "picked_up_domino": False,
+                    }
+                    self.game_log.append(new_game_log_entry)
             if move.ends_in_double:
                 train_id_with_double = move.sequences_to_play[-1]["train_id"]
                 if train_id_with_double is None:
@@ -1498,6 +1546,18 @@ class MexicanTrain:
                     train_id_with_double = possible_new_train_id
                 double_value = move.all_dominoes_played[-1][1]
                 new_domino = self.pickup(player)
+                # update the game log for the picked up domino
+                new_game_log_entry: GameLogEntry = {
+                    "row_id": len(self.game_log) + 1,
+                    "turn_id": self.turn_count,
+                    "player_id": player.id,
+                    "domino_played": new_domino,
+                    "train_played_on": None,
+                    "is_new_personal_train": None,
+                    "is_new_mexican_train": None,
+                    "picked_up_domino": True,
+                }
+                self.game_log.append(new_game_log_entry)
                 # if there were no more dominoes to pick up then
                 # the player's turn is over and their train is open
                 if new_domino is None:
@@ -1523,6 +1583,17 @@ class MexicanTrain:
                         ],
                     )
                     self.add_to_trains(player, required_move)
+                    # update the game log
+                    new_game_log_entry = {
+                        "row_id": len(self.game_log) + 1,
+                        "turn_id": self.turn_count,
+                        "player_id": player.id,
+                        "domino_played": new_domino,
+                        "train_played_on": train_id_with_double,
+                        "is_new_personal_train": None,
+                        "is_new_mexican_train": None,
+                        "picked_up_domino": False,
+                    }
                     if is_first:
                         # if it's the player's first turn, then they can
                         # continue playing because they fulfilled the double
@@ -1553,7 +1624,9 @@ class MexicanTrain:
             Exception: If the player makes an invalid move.
         """
         # Get agent move
-        move = agent.play(player, self.board, self.is_first, piece_counts)
+        move = agent.play(
+            player, self.board, self.is_first, piece_counts, self.game_log
+        )
 
         # Check if move is valid
         is_valid = self.check_valid_move(player, move, self.is_first)
@@ -1572,7 +1645,9 @@ class MexicanTrain:
         # method will have already played that double automatically, as
         # required by the rules of the game. But if it is the player's first
         # turn, then they are still able to move again at this point)
-        move = agent.play(player, self.board, self.is_first, piece_counts)
+        move = agent.play(
+            player, self.board, self.is_first, piece_counts, self.game_log
+        )
         is_valid = self.check_valid_move(player, move, self.is_first)
         if not is_valid:
             raise Exception("Invalid move")
@@ -1869,6 +1944,7 @@ class MexicanTrainBot(ABC):
         board: Board,
         is_first: bool,
         piece_counts: List[Tuple[str, int]],
+        game_log: List[GameLogEntry],
     ) -> Optional[Move]:
         """
         The method to choose a `Move` to play. All player agents must implement
@@ -1897,6 +1973,7 @@ class RandomPlayerAgent(MexicanTrainBot):
         board: Board,
         is_first: bool,
         piece_counts: List[Tuple[str, int]],
+        game_log: List[GameLogEntry],
     ) -> Optional[Move]:
         """
         Chooses a random valid move to play when it is the bot's turn.
@@ -1906,6 +1983,7 @@ class RandomPlayerAgent(MexicanTrainBot):
             board (Board): The board in the game.
             is_first (bool): Whether it is the first turn of the game.
             piece_counts (List[Tuple[str, int]]): The number of dominoes each player has left.
+            game_log (List[GameLogEntry]): The game log.
 
         Returns:
             Optional[Move]: The move to play.
