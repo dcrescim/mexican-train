@@ -1696,6 +1696,7 @@ class EloRating:
         k (float): The k factor to use for the Elo rating system.
         ratings (Dict[str, float]): The ratings for each bot. The key is the
             name of the bot and the value is the rating.
+        iter_count (int): A utility variable used to iterate over the ratings. Should not be used directly.
     """
 
     def __init__(self, k: float = 32, bot_names: List[str] = []):
@@ -1813,7 +1814,7 @@ class EloRating:
 
     def __next__(self):
         """
-        Allows us to iterate over the ratings.
+        Allows us to iterate over the ratings sorted from highest to lowest.
 
         Returns:
             str: The next rating.
