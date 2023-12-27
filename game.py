@@ -1613,10 +1613,10 @@ class MexicanTrain:
                 break
 
             if self.turn_count > 1000:
-                # print("Game over, no winner")
+                print("Game over, no winner")
                 return None
 
-        # print("The winner is player " + str(winner))
+        print("The winner is player " + str(winner))
         return cur_player
 
     def __str__(self):
