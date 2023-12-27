@@ -1,0 +1,29 @@
+# Ignore Python compiled files and caches
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Sphinx documentation
+build/doctrees/
+build/.doctrees/
+build/html/.buildinfo
+build/.buildinfo
+build/_modules/
+build/_sources/
+build/objects.inv
+
+# Ignore specific Sphinx build files
+# while keeping HTML, CSS, JS, and image files
+!build/html/*.html
+!build/html/_static/
+!build/html/_static/**/*
+!build/html/_images/
+!build/html/_images/**/*
+
+# Other files and folders to ignore (if applicable)
+*.log
+node_modules/
