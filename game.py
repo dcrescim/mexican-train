@@ -43,6 +43,14 @@ def random_string(length: int = 12) -> str:
     return "".join(random.choice(string.ascii_lowercase) for _ in range(length))
 
 
+def is_double(domino: Domino) -> bool:
+    """
+    Returns True if the given domino is a double, i.e. if both sides
+    have the same number of dots.
+    """
+    return domino[0] == domino[1]
+
+
 class Player:
     def __init__(self, dominoes: List[Domino] = []):
         self.id = random_string(6)
@@ -55,7 +63,7 @@ class Player:
     def get_highest_double(self) -> Optional[Domino]:
         highest_double = None
         for domino in self.dominoes:
-            if domino[0] == domino[1]:
+            if is_double(domino):
                 if highest_double is None or domino[0] > highest_double[0]:
                     highest_double = domino
         return highest_double
@@ -127,7 +135,7 @@ class Train:
     def ends_in_double(self) -> bool:
         if len(self.dominoes) == 0:
             return False
-        return self.dominoes[-1][0] == self.dominoes[-1][1]
+        return is_double(self.dominoes[-1])
 
     def get_end_value(self) -> int:
         if len(self.dominoes) == 0:
