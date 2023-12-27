@@ -3,21 +3,41 @@ import string
 from abc import ABC, abstractmethod
 from typing import Optional, List, Tuple, Any, Dict, TypedDict
 
-# a domino is a tuple of two integers that represent the values on
-# each half of the domino
 Domino = Tuple[int, int]
+"""A domino represented as a tuple of two integers indicating the values on each half."""
 
 
 class Continuation(TypedDict):
-    end_val: int
-    train_id: Optional[str]
-    starting_mexican_train: Optional[bool]
+    """
+    Typed dictionary representing the information needed to continue a train in the game.
+    """
+
+    end_val: int  # The value at the end of the train where a new domino can be placed.
+    train_id: Optional[
+        str
+    ]  # The unique identifier for the train, if applicable. If None, then the player is starting a new train off of the 'engine' at the center of the board.
+    starting_mexican_train: Optional[
+        bool
+    ]  # Indicates whether this starts a new Mexican train.
 
 
 def is_double(domino: Domino) -> bool:
     """
-    Returns True if the given domino is a double, i.e. if both sides
-    have the same number of dots.
+    Checks whether a domino is a double (a 'double' is a domino with the same value on both halves).
+
+    This function takes a domino and returns True if its two halves are equal or False if not.
+
+    Args:
+        domino (Domino): The domino to check.
+
+    Returns:
+        bool: True if the domino is a double, False otherwise.
+
+    Examples:
+        >>> is_double((0, 0))
+        True
+        >>> is_double((0, 1))
+        False
     """
     return domino[0] == domino[1]
 
@@ -27,13 +47,71 @@ def is_double(domino: Domino) -> bool:
 # unfulfilled double on the board. In this case, a valid
 # move might actually play dominoes on two different trains.
 class DominoesToPlay(TypedDict):
-    dominoes: List[Domino]
-    train_id: Optional[str]
-    starting_mexican_train: Optional[bool]
+    """
+    Typed dictionary representing the information needed to play a sequence of dominoes on a train.
+    """
+
+    dominoes: List[Domino]  # The dominoes to play on the train.
+    train_id: Optional[
+        str
+    ]  # The unique identifier for the train. If None, then the player is starting a new train off of the 'engine' at the center of the board.
+    starting_mexican_train: Optional[
+        bool
+    ]  # Indicates whether this starts a new Mexican train.
 
 
 class Move:
+    """
+    Representation of a move in the game.
+
+    This class represents a move in the game. A move is a sequence of dominoes
+    played on one or more trains. A move can be a player's first turn, in which
+    case they can play as many valid dominoes as they want on as many open
+    trains as they want (or start their own new train off of the 'engine' in the
+    center of the board). A move can also be made on a player's turn after
+    their first turn. In this case they can only play one domino on any open
+    train, or two dominoes if the first domino is a double and the second
+    domino fulfills the double. Finally, a move can be a player passing, in
+    which case the move is represented by None.
+
+    Attributes:
+        sequences_to_play (Optional[List[DominoesToPlay]]): A list of the sequences of dominoes to play on trains. If None, then the player is passing.
+
+    Raises:
+        ValueError: If the move has no sequences to play but is not None.
+        ValueError: If the move has an empty list of sequences to play.
+        ValueError: If the move has more than one sequence to play and any sequence other than the last one ends in a double.
+
+    Examples:
+        >>> move = Move(sequences_to_play=[{"dominoes": [(0, 0)], "train_id": None, "starting_mexican_train": False}])
+        >>> move.ends_in_double
+        True
+        >>> move.all_dominoes_played
+        [(0, 0)]
+        >>> move.train_ids_played_on
+        [None]
+        >>> move.starts_with_double
+        True
+        >>> move.collapse_sequences_by_train_id()
+        [([(0, 0)], None)]
+        >>> str(move)
+        'Player played [(0, 0)] on train None'
+        >>> repr(move)
+        [{'dominoes': [(0, 0)], 'train_id': None, 'starting_mexican_train': False}]
+    """
+
     def __init__(self, sequences_to_play: Optional[List[DominoesToPlay]] = None):
+        """
+        Initializes a move.
+
+        Args:
+            sequences_to_play (Optional[List[DominoesToPlay]]): A list of the sequences of dominoes to play on trains. If None, then the player is passing.
+
+        Raises:
+            ValueError: If the move has no sequences to play but is not None.
+            ValueError: If the move has an empty list of sequences to play.
+            ValueError: If the move has more than one sequence to play and any sequence other than the last one ends in a double.
+        """
         # if sequences_to_play is None, then the player is passing
         if (sequences_to_play is not None) and (len(sequences_to_play) == 0):
             raise ValueError(
@@ -56,12 +134,25 @@ class Move:
 
     @property
     def ends_in_double(self) -> bool:
+        """
+        Tells whether the move will result in an unfufilled double on the board.
+
+        Returns:
+            bool: True if the move ends in a double, False otherwise.
+        """
         if self.sequences_to_play is None:
             return False
         return is_double(self.sequences_to_play[-1]["dominoes"][-1])
 
     @property
     def all_dominoes_played(self) -> List[Domino]:
+        """
+        Tells us all of the dominoes played in the move regardless of which
+        train they were played on.
+
+        Returns:
+            List[Domino]: A list of all of the dominoes played in the move.
+        """
         output: List[Domino] = []
         if self.sequences_to_play is None:
             return output
@@ -71,6 +162,13 @@ class Move:
 
     @property
     def train_ids_played_on(self) -> List[str]:
+        """
+        Tells us all of the pre-existing train ids played on in the move.
+        Does not include `None` if the player is starting a new train.
+
+        Returns:
+            List[str]: A list of all of the train ids played on in the move.
+        """
         output: List[str] = []
         if self.sequences_to_play is None:
             return output
@@ -81,6 +179,12 @@ class Move:
 
     @property
     def starts_with_double(self) -> bool:
+        """
+        Tells whether the move starts with a double.
+
+        Returns:
+            bool: True if the move starts with a double, False otherwise.
+        """
         if self.sequences_to_play is None:
             return False
         return is_double(self.sequences_to_play[0]["dominoes"][0])
@@ -98,6 +202,26 @@ class Move:
     def collapse_sequences_by_train_id(
         self,
     ) -> List[Tuple[List[Domino], Optional[str]]]:
+        """
+        Returns a list of tuples of the form (dominoes, train_id) where the
+        dominoes are the dominoes played on the train with the given train_id.
+
+        Returns:
+            List[Tuple[List[Domino], Optional[str]]]: Each tuple represents a sequence of dominoes played on a train and contains:
+                - **Dominoes (List[Domino])**: A list of the dominoes played on the train
+                - **Train Id (Optional[str])**: The train id of the train the dominoes were played on
+
+        Examples:
+            >>> move = Move(sequences_to_play=[{"dominoes": [(0, 0)], "train_id": None, "starting_mexican_train": False}])
+            >>> move.collapse_sequences_by_train_id()
+            [([(0, 0)], None)]
+            >>> move = Move(sequences_to_play=[{"dominoes": [(0, 1)], "train_id": None, "starting_mexican_train": False}, {"dominoes": [(0, 2)], "train_id": "abcde", "starting_mexican_train": False}])
+            >>> move.collapse_sequences_by_train_id()
+            [([(0, 1)], None), ([(0, 2)], "abcde")]
+            >>> move = Move(sequences_to_play=[{"dominoes": [(0, 1)], "train_id": None, "starting_mexican_train": False}, {"dominoes": [(0, 2), (2, 3)], "train_id": "abcde", "starting_mexican_train": False}, {"dominoes": [(1, 1)], "train_id": None, "starting_mexican_train": False}])
+            >>> move.collapse_sequences_by_train_id()
+            [([(0, 1), (1, 1)], None), ([(0, 2), (2, 3)], "abcde")]
+        """
         if self.sequences_to_play is None:
             return []
         sequences_dict: Dict[str, List[Domino]] = {}
@@ -115,6 +239,13 @@ class Move:
         return output
 
     def __str__(self):
+        """
+        A string representation of the move that can be printed to the console
+        and tells, in plain English, what the player did.
+
+        Returns:
+            str: A string representation of the move.
+        """
         if self.sequences_to_play is None:
             return "Player passed"
         if len(self.sequences_to_play) == 1:
@@ -138,6 +269,13 @@ class Move:
             return output
 
     def __repr__(self):
+        """
+        A string representation of the move that can be printed to the console
+        and represents the move as a list of dictionaries.
+
+        Returns:
+            str: A string representation of the move.
+        """
         return str(self.sequences_to_play)
 
 
@@ -145,6 +283,18 @@ def canonical(domino: Domino) -> Domino:
     """
     Returns the domino in canonical form, i.e. (0, 1) instead of (1, 0)
     so that every domino has a unique representation.
+
+    Args:
+        domino (Domino): The domino to convert to canonical form.
+
+    Returns:
+        Domino: The domino in canonical form.
+
+    Examples:
+        >>> canonical((0, 1))
+        (0, 1)
+        >>> canonical((1, 0))
+        (0, 1)
     """
     return (min(domino), max(domino))
 
@@ -154,6 +304,12 @@ def make_all_dominoes(max_num_dots: int = 12) -> List[Domino]:
     Returns a list of all of the dominos in a set. The max_num_dots
     parameter determines the maximum number of dots on a domino within
     the set, and therefore the size of the set.
+
+    Args:
+        max_num_dots (int): The maximum number of dots on a domino.
+
+    Returns:
+        List[Domino]: A list of all of the dominos in the set.
     """
     dominoes: List[Domino] = []
     for i in range(0, max_num_dots + 1):
@@ -164,20 +320,71 @@ def make_all_dominoes(max_num_dots: int = 12) -> List[Domino]:
 
 def shift_arr(arr: List[Any], n: int) -> List[Any]:
     """
-    Shifts the first n elements of an array to the end.
+    Shifts the first n elements of an array to the end (not in place).
+
+    Args:
+        arr (List[Any]): The array to shift.
+        n (int): The number of elements to shift.
+
+    Returns:
+        List[Any]: The shifted array.
+
+    Examples:
+        >>> shift_arr([1, 2, 3, 4, 5], 2)
+        [3, 4, 5, 1, 2]
+        >>> shift_arr([1, 2, 3, 4, 5], 0)
+        [1, 2, 3, 4, 5]
+        >>> shift_arr([1, 2, 3, 4, 5], 5)
+        [1, 2, 3, 4, 5]
+        >>> shift_arr([1, 2, 3, 4, 5], 3)
+        [4, 5, 1, 2, 3]
     """
     return arr[n:] + arr[:n]
 
 
 def random_string(length: int = 12) -> str:
     """
-    Returns a random string of lowercase letters of the given length.
+    Creates a random string of lowercase letters of the given length.
+
+    Args:
+        length (int): The length of the string to create.
+
+    Returns:
+        str: The random string.
+
+    Examples:
+        >>> random_string(6)
+        'xvzvko'
+        >>> random_string(6)
+        'jxqzss'
+        >>> random_string(4)
+        'rmqw'
+        >>> random_string()
+        'vvqsvapteolk'
     """
     return "".join(random.choice(string.ascii_lowercase) for _ in range(length))
 
 
 class Player:
+    """
+    Representation of a player in the game.
+
+    This class represents a player in the game. A player has a unique id and
+    a list of dominoes in their hand.
+
+    Attributes:
+        id (str): The unique id of the player.
+        dominoes (List[Domino]): The dominoes in the player's hand.
+    """
+
     def __init__(self, dominoes: List[Domino] = [], player_id: Optional[str] = None):
+        """
+        Initializes a player.
+
+        Args:
+            dominoes (List[Domino]): The dominoes in the player's hand.
+            player_id (Optional[str]): The unique id of the player. If None, then a random id will be generated.
+        """
         if player_id is None:
             self.id = random_string(6)
         else:
@@ -186,9 +393,41 @@ class Player:
 
     @property
     def pieces_left(self) -> int:
+        """
+        The number of dominoes left in the player's hand.
+
+        Returns:
+            int: The number of dominoes left in the player's hand.
+
+        Examples:
+            >>> player = Player(dominoes=[(0, 0), (0, 1), (1, 1)])
+            >>> player.pieces_left
+            3
+            >>> player.remove_domino((0, 0))
+            >>> player.pieces_left
+            2
+            >>> player.remove_dominoes([(0, 1), (1, 1)])
+            >>> player.pieces_left
+            0
+        """
         return len(self.dominoes)
 
     def get_highest_double(self) -> Optional[Domino]:
+        """
+        Returns the highest double in the player's hand if one exists,
+        otherwise returns None.
+
+        Returns:
+            Optional[Domino]: The highest double in the player's hand if one exists, otherwise None.
+
+        Examples:
+            >>> player = Player(dominoes=[(0, 0), (0, 1), (1, 1)])
+            >>> player.get_highest_double()
+            (1, 1)
+            >>> player = Player(dominoes=[(0, 1), (0, 2), (1, 2)])
+            >>> player.get_highest_double()
+            None
+        """
         highest_double = None
         for domino in self.dominoes:
             if is_double(domino):
@@ -200,6 +439,25 @@ class Player:
         """
         Removes the given domino from the player's hand. If the domino
         is not in the player's hand, raises a ValueError.
+
+        Args:
+            domino (Domino): The domino to remove from the player's hand.
+
+        Raises:
+            ValueError: If the domino is not in the player's hand.
+
+        Examples:
+            >>> player = Player(dominoes=[(0, 0), (0, 1), (1, 1)])
+            >>> player.remove_domino((1, 0))
+            >>> player.dominoes
+            [(0, 0), (1, 1)]
+            >>> player.remove_domino((1, 1))
+            >>> player.dominoes
+            [(0, 0)]
+            >>> player.remove_domino((0, 2))
+            Traceback (most recent call last):
+                ...
+            ValueError: Tried to remove domino that didn't exist
         """
         if domino in self.dominoes:
             self.dominoes.remove(domino)
@@ -215,18 +473,75 @@ class Player:
         Will raise a ValueError if any of the dominoes are not in
         the player's hand, but will remove all dominoes up to the
         point of the error.
+
+        Args:
+            dominoes (List[Domino]): The list of dominoes to remove from the player's hand.
+
+        Raises:
+            ValueError: If any of the dominoes are not in the player's hand.
+
+        Examples:
+            >>> player = Player(dominoes=[(0, 0), (0, 1), (1, 1)])
+            >>> player.remove_dominoes([(0, 0), (1, 1)])
+            >>> player.dominoes
+            [(0, 1)]
+            >>> player.remove_dominoes([(0, 1), (1, 1)])
+            Traceback (most recent call last):
+                ...
+            ValueError: Tried to remove domino that didn't exist
+            >>> player.dominoes
+            [(0, 1)]
         """
         for domino in dominoes:
             self.remove_domino(domino)
 
     def __str__(self):
+        """
+        A string representation of the player that can be printed to the console
+        """
         return str({"id": self.id, "dominoes": self.dominoes})
 
     def __repr__(self):
+        """
+        A string representation of the player that can be printed to the console
+        """
         return str({"id": self.id, "dominoes": self.dominoes})
 
 
 class Train:
+    """
+    Representation of a train in the game.
+
+    This class represents a train in the game. A train has a unique id,
+
+    Attributes:
+        id (str): The unique id of the train.
+        dominoes (List[Domino]): The dominoes in the train.
+        is_open (bool): Whether the train is open or not.
+        player_id (Optional[str]): The unique id of the player who owns the train, if applicable.
+
+    Raises:
+        ValueError: If the train has no dominoes.
+        ValueError: If the given domino cannot be added to the train.
+
+    Examples:
+        >>> train = Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde")
+        >>> train.add_domino((1, 2))
+        >>> train.dominoes
+        [(0, 0), (0, 1), (1, 1), (1, 2)]
+        >>> train.add_dominoes([(2, 2), (2, 3)])
+        >>> train.dominoes
+        [(0, 0), (0, 1), (1, 1), (1, 2), (2, 2), (2, 3)]
+        >>> train.is_open_for_player("abcde")
+        True
+        >>> train.is_open_for_player("fghij")
+        False
+        >>> train.ends_in_double()
+        False
+        >>> train.get_end_value()
+        3
+    """
+
     def __init__(
         self,
         dominoes: List[Domino] = [],
@@ -234,6 +549,42 @@ class Train:
         is_open: bool = False,
         train_id: Optional[str] = None,
     ):
+        """
+        Initializes a train.
+
+        Args:
+            dominoes (List[Domino]): The dominoes in the train.
+            player_id (Optional[str]): The unique id of the player who owns the train, if applicable.
+            is_open (bool): Whether the train is open or not.
+            train_id (Optional[str]): The unique id of the train. If None, then a random id will be generated.
+
+        Raises:
+            ValueError: If the train has no dominoes.
+
+        Examples:
+            >>> train = Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde")
+            >>> train.dominoes
+            [(0, 0), (0, 1), (1, 1)]
+            >>> train.player_id
+            'abcde'
+            >>> train.is_open
+            False
+            >>> train.id
+            'xrioqj'
+            >>> train = Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde", is_open=True, train_id="abcde_player_train")
+            >>> train.dominoes
+            [(0, 0), (0, 1), (1, 1)]
+            >>> train.player_id
+            'abcde'
+            >>> train.is_open
+            True
+            >>> train.id
+            'abcde_player_train'
+            >>> train = Train(dominoes=[])
+            Traceback (most recent call last):
+                ...
+            ValueError: Train must have at least one domino
+        """
         if train_id is not None:
             self.id = train_id
         else:
@@ -245,6 +596,25 @@ class Train:
         self.player_id = player_id
 
     def add_domino(self, new_domino: Domino) -> None:
+        """
+        Adds the given domino to the train.
+
+        Args:
+            new_domino (Domino): The domino to add to the train.
+
+        Raises:
+            ValueError: If the given domino cannot be added to the train.
+
+        Examples:
+            >>> train = Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde")
+            >>> train.add_domino((1, 2))
+            >>> train.dominoes
+            [(0, 0), (0, 1), (1, 1), (1, 2)]
+            >>> train.add_domino((3, 3))
+            Traceback (most recent call last):
+                ...
+            ValueError: Cannot add domino (3, 3) to train [(0, 0), (0, 1), (1, 1), (1, 2)]
+        """
         last_domino = self.dominoes[-1]
         if last_domino[1] == new_domino[0]:
             self.dominoes.append(new_domino)
@@ -256,25 +626,89 @@ class Train:
             )
 
     def add_dominoes(self, dominoes: List[Domino]) -> None:
+        """
+        Adds the given list of dominoes to the train.
+
+        Args:
+            dominoes (List[Domino]): The list of dominoes to add to the train.
+
+        Raises:
+            ValueError: If any of the given dominoes cannot be added to the train.
+
+        Examples:
+            >>> train = Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde")
+            >>> train.add_dominoes([(1, 2), (2, 3)])
+            >>> train.dominoes
+            [(0, 0), (0, 1), (1, 1), (1, 2), (2, 3)]
+            >>> train.add_dominoes([(4, 5)])
+            Traceback (most recent call last):
+                ...
+            ValueError: Cannot add domino (4, 5) to train [(0, 0), (0, 1), (1, 1), (1, 2), (2, 3)]
+        """
         for domino in dominoes:
             self.add_domino(domino)
 
     def is_open_for_player(self, player_id: str) -> bool:
+        """
+        Returns whether the train is open for the given player.
+
+        Args:
+            player_id (str): The unique id of the player.
+
+        Returns:
+            bool: True if the train is open for the given player, False otherwise.
+
+        Examples:
+            >>> train = Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde")
+            >>> train.is_open_for_player("abcde")
+            True
+            >>> train.is_open_for_player("fghij")
+            False
+            >>> train.is_open = True
+            >>> train.is_open_for_player("abcde")
+            True
+            >>> train.is_open_for_player("fghij")
+            True
+            >>> train.is_open = False
+            >>> train.player_id = None
+            >>> train.is_open_for_player("abcde")
+            True
+            >>> train.is_open_for_player("fghij")
+            True
+        """
         return (
             (self.player_id is None) or (self.player_id == player_id) or (self.is_open)
         )
 
     def ends_in_double(self) -> bool:
+        """
+        Returns whether the train ends in a double.
+
+        Returns:
+            bool: True if the train ends in a double, False otherwise.
+        """
         if len(self.dominoes) == 0:
             return False
         return is_double(self.dominoes[-1])
 
     def get_end_value(self) -> int:
+        """
+        Returns the value at the end of the train.
+
+        Returns:
+            int: The value at the end of the train.
+        """
         if len(self.dominoes) == 0:
             raise ValueError("Train has no dominoes")
         return self.dominoes[-1][1]
 
     def __str__(self):
+        """
+        A string representation of the train that can be printed to the console
+
+        Returns:
+            str: A string representation of the train.
+        """
         return str(
             {
                 "id": self.id,
@@ -285,6 +719,13 @@ class Train:
         )
 
     def __repr__(self):
+        """
+        A representation of the train that can be used for debugging
+        or other purposes
+
+        Returns:
+            str: A representation of the train.
+        """
         return str(
             {
                 "id": self.id,
@@ -296,22 +737,148 @@ class Train:
 
 
 class Board:
+    """
+    Representation of the board in the game.
+
+    This class represents the board in the game. The board has a list of
+    trains and an engine (the domino in the center of the board that
+    all trains must start with).
+
+    Attributes:
+        trains (List[Train]): The trains on the board.
+        engine (Optional[Domino]): The engine in the center of the board.
+
+    Examples:
+        >>> board = Board(trains=[Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde"), Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="fghij")], engine=(0, 0))
+        >>> board.trains
+        [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'abcde'}, {'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'fghij'}]
+        >>> board.engine
+        (0, 0)
+        >>> board.contains_unfulfilled_double
+        False
+        >>> board.unfulfilled_double_value
+        >>> board.unfulfilled_double_train_id
+        >>> board.get_open_trains("abcde")
+        [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'abcde'}]
+        >>> board.get_open_trains("fghij")
+        [{'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'fghij'}]
+        >>> board.open_train(Player(dominoes=[], player_id="abcde"))
+        >>> board.trains
+        [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': True, 'player_id': 'abcde'}, {'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'fghij'}]
+        >>> board.close_train(Player(dominoes=[], player_id="abcde"))
+        >>> board.trains
+        [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'abcde'}, {'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'fghij'}]
+    """
+
     def __init__(self, trains: List[Train] = [], engine: Optional[Domino] = None):
+        """
+        Initializes a board.
+
+        Args:
+            trains (List[Train]): The trains on the board.
+            engine (Optional[Domino]): The engine in the center of the board.
+
+        Examples:
+            >>> board = Board(trains=[Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde"), Train(dominoes=[(0, 0), (0, 4), (4, 2)], player_id="fghij")], engine=(0, 0))
+            >>> board.trains
+            [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'abcde'}, {'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 4), (4, 2)], 'is_open': False, 'player_id': 'fghij'}]
+            >>> board.engine
+            (0, 0)
+        """
         self.trains = trains
         self.engine = engine
-        self.contains_unfulfilled_double: bool = False
-        self.unfulfilled_double_value: Optional[int] = None
-        self.unfulfilled_double_train_id: Optional[str] = None
+
+    @property
+    def contains_unfulfilled_double(self) -> bool:
+        """
+        Whether the board contains an unfulfilled double.
+
+        Returns:
+            bool: True if the board contains an unfulfilled double, False otherwise.
+        """
+        for train in self.trains:
+            if train.ends_in_double():
+                return True
+        return False
+
+    @property
+    def unfulfilled_double_value(self) -> Optional[int]:
+        """
+        The value of the unfulfilled double, if applicable.
+
+        Returns:
+            Optional[int]: The value of the unfulfilled double, if applicable.
+        """
+        for train in self.trains:
+            if train.ends_in_double():
+                return train.get_end_value()
+        return None
+
+    @property
+    def unfulfilled_double_train_id(self) -> Optional[str]:
+        """
+        The id of the train with the unfulfilled double, if applicable.
+
+        Returns:
+            Optional[str]: The id of the train with the unfulfilled double, if applicable.
+        """
+        for train in self.trains:
+            if train.ends_in_double():
+                return train.id
+        return None
 
     def get_open_trains(self, player_id: str) -> List[Train]:
+        """
+        Returns a list of all of the open trains for the given player.
+
+        Args:
+            player_id (str): The unique id of the player.
+
+        Returns:
+            List[Train]: A list of all of the open trains for the given player.
+
+        Examples:
+            >>> board = Board(trains=[Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde"), Train(dominoes=[(0, 0), (0, 4), (4, 2)], player_id="fghij")], engine=(0, 0))
+            >>> board.get_open_trains("abcde")
+            [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'abcde'}]
+            >>> board.get_open_trains("fghij")
+            [{'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 4), (4, 2)], 'is_open': False, 'player_id': 'fghij'}]
+        """
         return [train for train in self.trains if train.is_open_for_player(player_id)]
 
     def open_train(self, player: Player) -> None:
+        """
+        Opens the given player's train.
+
+        Args:
+            player (Player): The player whose train to open.
+
+        Examples:
+            >>> board = Board(trains=[Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde"), Train(dominoes=[(0, 0), (0, 4), (4, 2)], player_id="fghij")], engine=(0, 0))
+            >>> board.open_train(Player(dominoes=[], player_id="abcde"))
+            >>> board.trains
+            [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': True, 'player_id': 'abcde'}, {'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 4), (4, 2)], 'is_open': False, 'player_id': 'fghij'}]
+        """
         for train in self.trains:
             if train.player_id == player.id:
                 train.is_open = True
 
     def close_train(self, player: Player) -> None:
+        """
+        Closes the given player's train.
+
+        Args:
+            player (Player): The player whose train to close.
+
+        Examples:
+            >>> board = Board(trains=[Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde"), Train(dominoes=[(0, 0), (0, 4), (4, 2)], player_id="fghij")], engine=(0, 0))
+            >>> board.open_train(Player(dominoes=[], player_id="abcde"))
+            >>> board.trains
+            [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': True, 'player_id': 'abcde'}, {'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 4), (4, 2)], 'is_open': False, 'player_id': 'fghij'}]
+            >>> board.close_train(Player(dominoes=[], player_id="abcde"))
+            >>> board.trains
+            [{'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'abcde'}, {'id': 'kzjxwz', 'dominoes': [(0, 0), (0, 4), (4, 2)], 'is_open': False, 'player_id': 'fghij'}]
+        """
         for train in self.trains:
             if train.player_id == player.id:
                 train.is_open = False
@@ -319,22 +886,19 @@ class Board:
     def get_train_with_double(self) -> Optional[Train]:
         """
         Returns the train that ends in a double if one exists, otherwise
-        returns None. Also updates the board's `contains_unfulfilled_double`
-        and `unfulfilled_double_value` fields if necessary.
+        returns None.
+
+        Returns:
+            Optional[Train]: The train that ends in a double if one exists, otherwise None.
+
+        Examples:
+            >>> board = Board(trains=[Train(dominoes=[(0, 0), (0, 1), (1, 1)], player_id="abcde"), Train(dominoes=[(0, 0), (0, 4), (4, 2)], player_id="fghij")], engine=(0, 0))
+            >>> board.get_train_with_double()
+            {'id': 'xrioqj', 'dominoes': [(0, 0), (0, 1), (1, 1)], 'is_open': False, 'player_id': 'abcde'}
         """
         for train in self.trains:
             if train.ends_in_double():
-                # these values should already be set correctly, so this is
-                # likely redundant, but it's here just in case
-                self.contains_unfulfilled_double = True
-                self.unfulfilled_double_value = train.get_end_value()
-                self.unfulfilled_double_train_id = train.id
                 return train
-        # these values should already be set correctly, so this is
-        # likely redundant, but it's here just in case
-        self.contains_unfulfilled_double = False
-        self.unfulfilled_double_value = None
-        self.unfulfilled_double_train_id = None
         return None
 
     def make_starting_choices_for_player(
@@ -351,6 +915,16 @@ class Board:
         only returns the first domino of each possible move. Any valid
         move the player makes MUST either be in this list or start with a
         domino/train combination in this list.
+
+        Args:
+            continuations (List[Continuation]): A list of continuations (playable numbers, and the corresponding open train that ends in said number) for the player's current turn.
+            player (Player): The player whose turn it is.
+
+        Returns:
+            List[Tuple[Domino, Optional[str], Optional[bool]]]: Each tuple in the list contains:
+                - **Domino (Domino)**: The first domino in a potential move.
+                - **Train ID (Optional[str])**: The ID of the train on which the domino can be played or `None` if not applicable.
+                - **Is Communal (Optional[bool])**: True if the move starts a communal train, False for a personal train, and None if not applicable.
         """
         all_starter_choices: List[Tuple[Domino, Optional[str], Optional[bool]]] = []
         for continuation in continuations:
@@ -381,6 +955,12 @@ class Board:
         Returns a list of all possible continuations (playable numbers,
         and the corresponding open train that ends in said number) for
         the player's current turn.
+
+        Args:
+            player (Player): The player whose turn it is.
+
+        Returns:
+            List[Continuation]: A list of continuations (playable numbers, and the corresponding open train that ends in said number) for the player's current turn.
         """
         double_train = self.get_train_with_double()
         # if there is a double on the board, then the only option is for the
@@ -486,6 +1066,15 @@ class Board:
         first domino of each possible move, and if the player tries to play a
         double that they can fulfill (without fulfilling it), an exception will
         be raised in the `handle_player_turn` method of the `MexicanTrain` class.
+
+        Args:
+            player (Player): The player whose turn it is.
+
+        Returns:
+            List[Tuple[Domino, Optional[str], Optional[bool]]]: Each tuple in the list contains:
+                - **Domino (Domino)**: The first domino in a potential move.
+                - **Train ID (Optional[str])**: The ID of the train on which the domino can be played or `None` if not applicable.
+                - **Is Communal (Optional[bool])**: True if the move starts a communal train, False for a personal train, and None if not applicable.
         """
         # print("player", player)
         continuations = self.get_continuations(player)
@@ -495,14 +1084,50 @@ class Board:
         return choices
 
     def __str__(self):
+        """
+        A string representation of the board that can be printed to the console
+
+        Returns:
+            str: A string representation of the board.
+        """
         return str({"trains": self.trains, "engine": self.engine})
 
     def __repr__(self):
+        """
+        A representation of the board that can be used for debugging
+
+        Returns:
+            str: A representation of the board.
+        """
         return str({"trains": self.trains, "engine": self.engine})
 
 
 class MexicanTrain:
+    """
+    Representation of the Mexican Train game.
+
+    This class represents the Mexican Train game. The game has a list of
+    players, a board, and a turn counter.
+
+    Attributes:
+        players (List[Player]): The players in the game.
+        board (Board): The board in the game.
+        is_first (bool): Whether it is the first turn of the game.
+        turn (int): The index of the player whose turn it is.
+        turn_count (int): The number of turns that have been taken.
+        player_count (int): The number of players in the game.
+        player_agents (List[MexicanTrainBot]): The agents for each player.
+        random_seed (Optional[int]): The random seed for the game.
+        dominoes (List[Domino]): The dominoes in the game.
+    """
+
     def __init__(self, random_seed: Optional[int] = None) -> None:
+        """
+        Initializes a Mexican Train game.
+
+        Args:
+            random_seed (Optional[int]): The random seed for the game.
+        """
         self.players: List[Player] = []
         self.board: Board = Board(trains=[], engine=None)
         self.is_first: bool = False
@@ -515,12 +1140,24 @@ class MexicanTrain:
         self.dominoes: List[Domino] = make_all_dominoes()
 
     def add_player(self, agent_class: "MexicanTrainBot") -> None:
+        """
+        Adds a player to the game.
+
+        Args:
+            agent_class (MexicanTrainBot): The agent class for the player - this is the bot that plays the game.
+        """
         self.player_count += 1
         self.player_agents.append(agent_class)
         self.players.append(Player(dominoes=[], player_id=agent_class.name))
 
     # Up to 4 players take 15 dominoes each, 5 or 6 take 12 each, 7 or 8 take 10 each.
     def get_hand_size(self) -> int:
+        """
+        Returns the number of dominoes each player should have in their hand.
+
+        Returns:
+            int: The number of dominoes each player should have in their hand.
+        """
         if self.player_count < 5:
             return 15
         elif self.player_count < 7:
@@ -529,6 +1166,9 @@ class MexicanTrain:
             return 10
 
     def deal(self) -> None:
+        """
+        Deals the dominoes to the players.
+        """
         random.seed(self.random_seed)
         random.shuffle(self.dominoes)
 
@@ -539,6 +1179,15 @@ class MexicanTrain:
             self.players[i].dominoes = hand
 
     def pickup(self, player: Player) -> Optional[Domino]:
+        """
+        Picks up a domino from the boneyard.
+
+        Args:
+            player (Player): The player who is picking up a domino.
+
+        Returns:
+            Optional[Domino]: The domino that the player picked up, if there were any left in the boneyard.
+        """
         if len(self.dominoes) == 0:
             # print("No more dominoes to pickup")
             return
@@ -551,6 +1200,12 @@ class MexicanTrain:
         Returns True if the given list of dominoes is a valid sequence
         where the first half of each domino matches the second half of
         the prior domino. Returns False otherwise.
+
+        Args:
+            dominoes (List[Domino]): The list of dominoes to check.
+
+        Returns:
+            bool: True if the given list of dominoes is a valid sequence, False otherwise.
         """
         if len(dominoes) == 0:
             return False
@@ -565,6 +1220,12 @@ class MexicanTrain:
         """
         Checks if the player has a domino that can fulfill the double
         currently on the board.
+
+        Args:
+            player (Player): The player to check.
+
+        Returns:
+            bool: True if the player has a domino that can fulfill the double, False otherwise.
         """
         if not self.board.contains_unfulfilled_double:
             raise Exception("No unfulfilled double")
@@ -586,6 +1247,14 @@ class MexicanTrain:
         If the proposed move is None, checks if the player is allowed
         to pass. If the proposed move is not None, checks if the
         player is allowed to make the proposed move.
+
+        Args:
+            player (Player): The player who is making the move.
+            proposed_move (Optional[Move]): The proposed move.
+            is_first (bool): Whether it is the first turn of the game.
+
+        Returns:
+            bool: True if the proposed move is valid, False otherwise.
         """
         # let the player pass if they're not obligated to fulfill a double
         if proposed_move is None or proposed_move.sequences_to_play is None:
@@ -692,32 +1361,6 @@ class MexicanTrain:
         # if we've made it this far, then the move is valid
         return True
 
-    def update_board_unfulfilled_double_status(
-        self, move: Move, new_train_id: Optional[str]
-    ) -> None:
-        """
-        Updates the board's `contains_unfulfilled_double`,
-        `unfulfilled_double_value`, and `unfulfilled_double_train_id` fields
-        based on the given move that was just made.
-        """
-        if move.ends_in_double:
-            if move.sequences_to_play is None:
-                raise Exception(
-                    "Move can't end in double if it doesn't play any dominoes"
-                )
-            train_id_with_double = move.sequences_to_play[-1]["train_id"]
-            if train_id_with_double is None:
-                if new_train_id is None:
-                    raise Exception("No train id provided for new train")
-                train_id_with_double = new_train_id
-            self.board.contains_unfulfilled_double = True
-            self.board.unfulfilled_double_value = move.all_dominoes_played[-1][1]
-            self.board.unfulfilled_double_train_id = train_id_with_double
-        else:
-            self.board.contains_unfulfilled_double = False
-            self.board.unfulfilled_double_value = None
-            self.board.unfulfilled_double_train_id = None
-
     def add_to_trains(self, player: Player, move: Move) -> str | None:
         """
         Adds the dominoes in the move to the trains specified by the move.
@@ -727,6 +1370,13 @@ class MexicanTrain:
         Updates the board's `contains_unfulfilled_double`,
         `unfulfilled_double_value`, and `unfulfilled_double_train_id` fields
         if appropriate.
+
+        Args:
+            player (Player): The player who is making the move.
+            move (Move): The move to make.
+
+        Returns:
+            str | None: The id of the new train if the move creates a new train, None otherwise.
         """
 
         if move.sequences_to_play is None:
@@ -754,9 +1404,6 @@ class MexicanTrain:
                     )
                     self.board.trains.append(communal_mexican_train)
                     player.remove_dominoes(append_dominoes)
-                    self.update_board_unfulfilled_double_status(
-                        move, communal_mexican_train.id
-                    )
                     return proposed_train_id
                 else:
                     proposed_train_id = f"{player.id}_personal_train"
@@ -774,7 +1421,6 @@ class MexicanTrain:
                     )
                     self.board.trains.append(personal_train)
                     player.remove_dominoes(append_dominoes)
-                    self.update_board_unfulfilled_double_status(move, personal_train.id)
                     return proposed_train_id
             else:
                 for train in self.board.trains:
@@ -787,7 +1433,6 @@ class MexicanTrain:
                             and not train_ends_in_double_after_move
                         ):
                             self.board.close_train(player)
-                        self.update_board_unfulfilled_double_status(move, None)
                         return
 
     def set_engine(self) -> bool:
@@ -795,6 +1440,9 @@ class MexicanTrain:
         Sets the first domino of the whole game (the train engine)
         equal to highest double of the first player who has at least
         one double. If no player has a double, returns False.
+
+        Returns:
+            bool: True if the engine was found, False otherwise.
         """
         # Check for highest doubles
         for i in range(len(self.players)):
@@ -809,7 +1457,13 @@ class MexicanTrain:
 
         return False
 
-    def win_condition(self):
+    def win_condition(self) -> str | None:
+        """
+        Checks if any player has won the game.
+
+        Returns:
+            str | None: The id of the winning player if there is one, None otherwise.
+        """
         for player in self.players:
             if len(player.dominoes) == 0:
                 return player.id
@@ -819,6 +1473,14 @@ class MexicanTrain:
         """
         Performs the given move for the given player. Returns True if the
         player's turn is over, and False if the player gets to play again.
+
+        Args:
+            player (Player): The player who is making the move.
+            move (Move | None): The move to make.
+            is_first (bool): Whether it is the first turn of the game.
+
+        Returns:
+            bool: True if the player's turn is over, and False if the player gets to play again.
         """
         if move is None or move.sequences_to_play is None:
             self.pickup(player)
@@ -879,6 +1541,17 @@ class MexicanTrain:
         agent: "MexicanTrainBot",
         piece_counts: List[Tuple[str, int]],
     ) -> None:
+        """
+        Handles a player's turn.
+
+        Args:
+            player (Player): The player whose turn it is.
+            agent (MexicanTrainBot): The agent for the player.
+            piece_counts (List[Tuple[str, int]]): The number of dominoes each player has left.
+
+        Raises:
+            Exception: If the player makes an invalid move.
+        """
         # Get agent move
         move = agent.play(player, self.board, self.is_first, piece_counts)
 
@@ -907,6 +1580,15 @@ class MexicanTrain:
             self.perform_move(player, move, self.is_first)
 
     def play(self):
+        """
+        Plays the game.
+
+        Returns:
+            Player: The winning player.
+
+        Raises:
+            Exception: If no engine is found.
+        """
         self.deal()
         found_it = self.set_engine()
 
@@ -931,13 +1613,19 @@ class MexicanTrain:
                 break
 
             if self.turn_count > 1000:
-                print("Game over, no winner")
+                # print("Game over, no winner")
                 return None
 
-        print("The winner is player " + str(winner))
+        # print("The winner is player " + str(winner))
         return cur_player
 
     def __str__(self):
+        """
+        A string representation of the game that can be printed to the console
+
+        Returns:
+            str: A string representation of the game.
+        """
         return str(
             {
                 "board": self.board,
@@ -951,6 +1639,12 @@ class MexicanTrain:
         )
 
     def __repr__(self):
+        """
+        A representation of the game that can be used for debugging
+
+        Returns:
+            str: A representation of the game.
+        """
         return str(
             {
                 "board": self.board,
@@ -967,6 +1661,11 @@ class MexicanTrain:
 def log_invalid_move(board: Board, player: Player, move: Optional[Move]) -> None:
     """
     Logs an invalid move to the console. This is useful for debugging.
+
+    Args:
+        board (Board): The board in the game.
+        player (Player): The player who made the invalid move.
+        move (Optional[Move]): The invalid move.
     """
     print("Invalid move. Details below:")
     print("Board:")
@@ -983,7 +1682,23 @@ def log_invalid_move(board: Board, player: Player, move: Optional[Move]) -> None
 # Mexican Train Bot is a stub class that all player agents should inherit from
 # it has a play method that takes in a player, board, is_first, and piece_counts
 class MexicanTrainBot(ABC):
+    """
+    Representation of a Mexican Train bot.
+
+    This class represents a Mexican Train bot. All player agents should
+    inherit from this class and implement the play method.
+
+    Attributes:
+        name (str): The name of the bot.
+    """
+
     def __init__(self, name: Optional[str]):
+        """
+        Initializes a Mexican Train bot.
+
+        Args:
+            name (Optional[str]): The name of the bot.
+        """
         if name is None:
             self.name = random_string()
         else:
@@ -997,11 +1712,27 @@ class MexicanTrainBot(ABC):
         is_first: bool,
         piece_counts: List[Tuple[str, int]],
     ) -> Optional[Move]:
+        """
+        The method to choose a `Move` to play. All player agents must implement
+        this method.
+        """
         pass
 
 
 # This is a random agent that plays a random move
 class RandomPlayerAgent(MexicanTrainBot):
+    """
+    Representation of a random Mexican Train bot.
+
+    This class represents a random Mexican Train bot. It plays a random
+    move from the list of valid moves each turn. On the first turn it
+    only plays a single domino at random. it doesn't pick a whole sequence
+    of dominoes to play.
+
+    Attributes:
+        name (str): The name of the bot.
+    """
+
     def play(
         self,
         player: Player,
@@ -1009,6 +1740,18 @@ class RandomPlayerAgent(MexicanTrainBot):
         is_first: bool,
         piece_counts: List[Tuple[str, int]],
     ) -> Optional[Move]:
+        """
+        Chooses a random valid move to play when it is the bot's turn.
+
+        Args:
+            player (Player): The player whose turn it is.
+            board (Board): The board in the game.
+            is_first (bool): Whether it is the first turn of the game.
+            piece_counts (List[Tuple[str, int]]): The number of dominoes each player has left.
+
+        Returns:
+            Optional[Move]: The move to play.
+        """
         choices = board.get_choices(player)
         if len(choices) == 0:
             return None
