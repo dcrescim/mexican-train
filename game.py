@@ -52,8 +52,11 @@ def is_double(domino: Domino) -> bool:
 
 
 class Player:
-    def __init__(self, dominoes: List[Domino] = []):
-        self.id = random_string(6)
+    def __init__(self, dominoes: List[Domino] = [], player_id: Optional[str] = None):
+        if player_id is None:
+            self.id = random_string(6)
+        else:
+            self.id = player_id
         self.dominoes = dominoes
 
     @property
@@ -277,6 +280,12 @@ class Board:
         returns the first domino of each possible move. Any valid move the
         player makes MUST either be in this list or start with a
         domino/train combination in this list.
+
+        NOTE: This method may return moves that start with a double that the
+        player is capable of fulfilling. Note that this method only returns the
+        first domino of each possible move, and if the player tries to play a
+        double that they can fulfill (without fulfilling it), an exception will
+        be raised in the `handle_player_turn` method of the `MexicanTrain` class.
         """
         # print("player", player)
         continuations = self.get_continuations(player)
@@ -308,7 +317,7 @@ class MexicanTrain:
     def add_player(self, agent_class: "MexicanTrainBot") -> None:
         self.player_count += 1
         self.player_agents.append(agent_class)
-        self.players.append(Player(dominoes=[]))
+        self.players.append(Player(dominoes=[], player_id=agent_class.name))
 
     # Up to 4 players take 15 dominoes each, 5 or 6 take 12 each, 7 or 8 take 10 each.
     def get_hand_size(self) -> int:
@@ -329,12 +338,13 @@ class MexicanTrain:
             self.dominoes = self.dominoes[hand_size:]
             self.players[i].dominoes = hand
 
-    def pickup(self, player: Player) -> None:
+    def pickup(self, player: Player) -> Optional[Domino]:
         if len(self.dominoes) == 0:
             # print("No more dominoes to pickup")
             return
         domino = self.dominoes.pop()
         player.dominoes.append(domino)
+        return domino
 
     def valid_domino_sequence(self, dominoes: List[Domino]) -> bool:
         if len(dominoes) == 0:
@@ -373,11 +383,28 @@ class MexicanTrain:
         player is allowed to make the proposed move.
         """
         if proposed_move is None:
-            # add logic for checking if the player is allowed to pass based on
-            # whether or not they have to fulfill a double
-            # the player is allowed to pass if there's no obligation to fulfill
-            # a double
+            if self.board.contains_unfulfilled_double:
+                if self.check_if_player_can_fulfill_double(player):
+                    # they can't pass if they have a domino that can fulfill
+                    # the double
+                    return False
             return True
+
+        ends_in_double = is_double(proposed_move[0][-1])
+        if ends_in_double:
+            double_value = proposed_move[0][-1][1]
+            dominoes_played = set(proposed_move[0])
+            player_remaining_dominoes = list(set(player.dominoes) - dominoes_played)
+            player_can_fulfill_double = False
+            for domino in player_remaining_dominoes:
+                if domino[0] == double_value:
+                    player_can_fulfill_double = True
+                if domino[1] == double_value:
+                    player_can_fulfill_double = True
+            if player_can_fulfill_double:
+                # they can't end their move on a double if they have a domino
+                # that can fulfill it
+                return False
 
         allowed_choices = self.board.get_choices(player)
 
@@ -388,8 +415,15 @@ class MexicanTrain:
         if len(proposed_dominoes) == 0:
             return False
 
-        if len(proposed_dominoes) > 1 and not is_first:
+        if len(proposed_dominoes) > 2 and not is_first:
             return False
+
+        if len(proposed_dominoes) == 2 and not is_first:
+            move_starts_with_double = is_double(proposed_dominoes[0])
+            double_value = proposed_dominoes[0][1]
+            fulfills_double = proposed_dominoes[1][0] == double_value
+            if (not move_starts_with_double) or (not fulfills_double):
+                return False
 
         first_domino_move = proposed_dominoes[0]
         for allowed_first_dominoes, open_train_id in allowed_choices:
@@ -403,6 +437,11 @@ class MexicanTrain:
     def update_board_unfulfilled_double_status(
         self, move: Move, new_train_id: Optional[str]
     ) -> None:
+        """
+        Updates the board's `contains_unfulfilled_double`,
+        `unfulfilled_double_value`, and `unfulfilled_double_train_id` fields
+        based on the given move that was just made.
+        """
         train_ends_in_double_after_move = is_double(move[0][-1])
         if train_ends_in_double_after_move:
             train_id_with_double = move[1]
@@ -491,6 +530,26 @@ class MexicanTrain:
             return False
         else:
             self.add_to_train(player, move)
+            if is_double(move[0][-1]):
+                new_domino = self.pickup(player)
+                # if there were no more dominoes to pick up then
+                # the player's turn is over and their train is open
+                if new_domino is None:
+                    self.board.open_train(player)
+                    return True
+                # if the player picked up a domino that can fulfill
+                # the double, then they must play it
+                if new_domino[0] == move[0][-1][1]:
+                    self.add_to_train(player, ([new_domino], move[1]))
+                    return True
+                if new_domino[1] == move[0][-1][1]:
+                    flipped_domino = (new_domino[1], new_domino[0])
+                    self.add_to_train(player, ([flipped_domino], move[1]))
+                    return True
+                # if the player picked up a domino that cannot fulfill
+                # the double, then their turn is over and their train
+                # is open
+                self.board.open_train(player)
             return True
 
     def handle_player_turn(
@@ -612,7 +671,31 @@ class RandomPlayerAgent(MexicanTrainBot):
             return None
 
         random.shuffle(choices)
-        return choices[0]
+        # To avoid an exception in the `handle_player_turn` method of the
+        # `MexicanTrain` class, we must ensure that the move doesn't end
+        # in a double if the player has a domino that can fulfill it
+        choice_ends_in_double = is_double(choices[0][0][-1])
+        if not choice_ends_in_double:
+            return choices[0]
+        else:
+            move = choices[0]
+            double_value = choices[0][0][-1][1]
+            player_remaining_dominoes = list(set(player.dominoes) - set(choices[0][0]))
+            random.shuffle(player_remaining_dominoes)
+            tile_to_fullfill_double = None
+            for domino in player_remaining_dominoes:
+                if domino[0] == double_value:
+                    tile_to_fullfill_double = domino
+                if domino[1] == double_value:
+                    flipped_domino = (domino[1], domino[0])
+                    tile_to_fullfill_double = flipped_domino
+                if tile_to_fullfill_double is not None:
+                    move[0].append(tile_to_fullfill_double)
+                    return move
+            # if we've made it this far, then the player has no dominoes
+            # that can fulfill the double, which means it's a valid move
+            # to play the double
+            return choices[0]
 
 
 for i in range(1000):
