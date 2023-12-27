@@ -208,8 +208,8 @@ class Move:
 
         Returns:
             List[Tuple[List[Domino], Optional[str]]]: Each tuple represents a sequence of dominoes played on a train and contains:
-                - **Dominoes (List[Domino])**: A list of the dominoes played on the train
-                - **Train Id (Optional[str])**: The train id of the train the dominoes were played on
+                - **Dominoes** (*List[Domino]*): A list of the dominoes played on the train
+                - **Train Id** (*Optional[str]*): The train id of the train the dominoes were played on
 
         Examples:
             >>> move = Move(sequences_to_play=[{"dominoes": [(0, 0)], "train_id": None, "starting_mexican_train": False}])
@@ -922,9 +922,9 @@ class Board:
 
         Returns:
             List[Tuple[Domino, Optional[str], Optional[bool]]]: Each tuple in the list contains:
-                - **Domino (Domino)**: The first domino in a potential move.
-                - **Train ID (Optional[str])**: The ID of the train on which the domino can be played or `None` if not applicable.
-                - **Is Communal (Optional[bool])**: True if the move starts a communal train, False for a personal train, and None if not applicable.
+                - **Domino** (*Domino*): The first domino in a potential move.
+                - **Train ID** (*Optional[str]*): The ID of the train on which the domino can be played or `None` if not applicable.
+                - **Is Communal** (*Optional[bool]*): True if the move starts a communal train, False for a personal train, and None if not applicable.
         """
         all_starter_choices: List[Tuple[Domino, Optional[str], Optional[bool]]] = []
         for continuation in continuations:
@@ -1072,9 +1072,9 @@ class Board:
 
         Returns:
             List[Tuple[Domino, Optional[str], Optional[bool]]]: Each tuple in the list contains:
-                - **Domino (Domino)**: The first domino in a potential move.
-                - **Train ID (Optional[str])**: The ID of the train on which the domino can be played or `None` if not applicable.
-                - **Is Communal (Optional[bool])**: True if the move starts a communal train, False for a personal train, and None if not applicable.
+                - **Domino** (*Domino*): The first domino in a potential move.
+                - **Train ID** (*Optional[str]*): The ID of the train on which the domino can be played or `None` if not applicable.
+                - **Is Communal** (*Optional[bool]*): True if the move starts a communal train, False for a personal train, and None if not applicable.
         """
         # print("player", player)
         continuations = self.get_continuations(player)
@@ -1613,11 +1613,19 @@ class MexicanTrain:
                 break
 
             if self.turn_count > 1000:
-                print("Game over, no winner")
+                # print("Game over, no winner")
                 return None
 
-        print("The winner is player " + str(winner))
-        return cur_player
+        # print("The winner is player " + str(winner))
+
+        player_results: List[Tuple[str, int]] = []
+        for player in self.players:
+            if player.id == winner:
+                player_score = 0
+            else:
+                player_score = sum([sum(d) for d in player.dominoes])
+            player_results.append((player.id, player_score))
+        return sorted(player_results, key=lambda x: x[1])
 
     def __str__(self):
         """
@@ -1677,6 +1685,156 @@ def log_invalid_move(board: Board, player: Player, move: Optional[Move]) -> None
     print("Move:")
     print(move.__str__())
     print("--------------------")
+
+
+class EloRating:
+    """
+    Utility class that allows us to rate the bots based on their performance
+    against each other.
+
+    Attributes:
+        k (float): The k factor to use for the Elo rating system.
+        ratings (Dict[str, float]): The ratings for each bot. The key is the
+            name of the bot and the value is the rating.
+        iter_count (int): A utility variable used to iterate over the ratings. Should not be used directly.
+    """
+
+    def __init__(self, k: float = 32, bot_names: List[str] = []):
+        """
+        Initializes the EloRating class.
+
+        Args:
+            k (float): The k factor to use for the Elo rating system.
+        """
+        self.k: float = k
+        self.ratings: Dict[str, float] = {}
+        for bot_name in bot_names:
+            self.ratings[bot_name] = 1500.0
+        self.iter_count: int = 0
+
+    def get_expected_score(self, bot1: str, bot2: str) -> float:
+        """
+        Returns the expected score for bot1 against bot2.
+
+        Args:
+            bot1 (str): The name of the first bot.
+            bot2 (str): The name of the second bot.
+
+        Returns:
+            float: The expected score for bot1 against bot2.
+        """
+        rating1 = self.ratings[bot1]
+        rating2 = self.ratings[bot2]
+        return 1.0 / (1.0 + 10.0 ** ((rating2 - rating1) / 400.0))
+
+    def get_new_ratings_two_players(
+        self,
+        bot1: str,
+        bot2: str,
+        bot1_won: Optional[bool] = None,
+        tie: Optional[bool] = None,
+    ) -> Tuple[float, float]:
+        """
+        Returns the new ratings for bot1 and bot2 after a game between the two
+        bots.
+
+        Args:
+            bot1 (str): The name of the first bot.
+            bot2 (str): The name of the second bot.
+            bot1_won (Optional[bool]): Whether bot1 won the game.
+            tie (Optional[bool]): Whether the game was a tie.
+
+        Returns:
+            Tuple[float, float]: The new ratings for bot1 and bot2, respectively.
+
+        Raises:
+            Exception: If neither bot1_won nor tie is None.
+            Exception: If both bot1_won and tie are None.
+        """
+        if bot1_won is None and tie is None:
+            raise Exception("Either bot1_won or tie must be non-None")
+        if bot1_won is not None and tie is not None:
+            raise Exception("Either bot1_won or tie must be None")
+        expected_score = self.get_expected_score(bot1, bot2)
+        if bot1_won:
+            actual_score = 1.0
+        elif bot1_won is None and tie:
+            actual_score = 0.5
+        else:
+            actual_score = 0.0
+        new_bot1_rating = self.ratings[bot1] + self.k * (actual_score - expected_score)
+        new_bot2_rating = self.ratings[bot2] + self.k * (expected_score - actual_score)
+        return (new_bot1_rating, new_bot2_rating)
+
+    def update_ratings(self, bot_names: List[str], bot_scores: List[float]) -> None:
+        """
+        Updates the ratings for all bots based on the results of a game
+        between all of the bots.
+
+        Args:
+            bot_names (List[str]): The names of all of the bots.
+            bot_scores (List[float]): The scores of all of the bots in the game.
+        """
+        new_ratings: Dict[str, List[float]] = {}
+        for bot_name in bot_names:
+            new_ratings[bot_name] = []
+        for i in range(len(bot_names)):
+            for j in range(i + 1, len(bot_names)):
+                bot1 = bot_names[i]
+                bot2 = bot_names[j]
+                bot1_won = (
+                    bot_scores[i] < bot_scores[j]
+                )  # lower score is better in Mexican Train
+                tie = bot_scores[i] == bot_scores[j]
+                if bot1_won:
+                    tie = None
+                if tie:
+                    bot1_won = None
+                if bot1_won == False and tie == False:
+                    tie = None
+                new_bot1_rating, new_bot2_rating = self.get_new_ratings_two_players(
+                    bot1, bot2, bot1_won, tie
+                )
+                new_ratings[bot1].append(new_bot1_rating)
+                new_ratings[bot2].append(new_bot2_rating)
+        for bot_name in bot_names:
+            self.ratings[bot_name] = sum(new_ratings[bot_name]) / len(
+                new_ratings[bot_name]
+            )
+        return
+
+    def __iter__(self):
+        """
+        Allows us to iterate over the ratings.
+
+        Returns:
+            Iterator[Tuple[str, float]]: An iterator over the ratings.
+        """
+        return self
+
+    def __next__(self):
+        """
+        Allows us to iterate over the ratings sorted from highest to lowest.
+
+        Returns:
+            str: The next rating.
+        """
+        sorted_ratings = sorted(self.ratings.items(), key=lambda x: x[1], reverse=True)
+        if self.iter_count >= len(self.ratings):
+            self.iter_count = 0
+            raise StopIteration
+        else:
+            self.iter_count += 1
+            return f"Place {self.iter_count}: {sorted_ratings[self.iter_count - 1][0]} - ELO Rating: {round(sorted_ratings[self.iter_count - 1][1], 2)}"
+
+    def __len__(self):
+        """
+        Returns the number of ratings.
+
+        Returns:
+            int: The number of ratings.
+        """
+        return len(self.ratings)
 
 
 # Mexican Train Bot is a stub class that all player agents should inherit from
@@ -1803,10 +1961,66 @@ class RandomPlayerAgent(MexicanTrainBot):
             return move
 
 
-for i in range(1000):
+# List of all bots in the tournament
+players: List[MexicanTrainBot] = [
+    RandomPlayerAgent("John"),
+    RandomPlayerAgent("Jacob"),
+    RandomPlayerAgent("Jingleheimer"),
+    RandomPlayerAgent("Schmidt"),
+    RandomPlayerAgent("His"),
+    RandomPlayerAgent("Name_1"),
+    RandomPlayerAgent("Is"),
+    RandomPlayerAgent("My"),
+    RandomPlayerAgent("Name_2"),
+    RandomPlayerAgent("Too"),
+]
+
+# Create the EloRating object that will rate the players in the tournament
+elo_rating = EloRating(bot_names=[player.name for player in players], k=20)
+
+
+def play_1_game(players: List[MexicanTrainBot]) -> list[Tuple[str, int]] | None:
+    """
+    Plays a single game between the given players.
+
+    Args:
+        players (List[MexicanTrainBot]): The players in the game.
+
+    Returns:
+        list[Tuple[str, int]] | None: The results of the game if there was a winner, None otherwise. If there was a winner, each tuple in the list contains:
+            - **Player Name** (*str*) -- The name of the player.
+            - **Player Score** (*int*) -- The score of the player.
+    """
     mexican_train = MexicanTrain()
-    mexican_train.add_player(RandomPlayerAgent("John"))
-    mexican_train.add_player(RandomPlayerAgent("Jacob"))
-    mexican_train.add_player(RandomPlayerAgent("Jingleheimer"))
-    mexican_train.add_player(RandomPlayerAgent("Schmidt"))
-    mexican_train.play()
+    for player in players:
+        mexican_train.add_player(player)
+    return mexican_train.play()
+
+
+for i in range(1500):
+    # Set up a game with a random number of players
+    num_players = random.randint(3, min(len(players), 8))
+    randomly_sampled_players = random.sample(players, num_players)
+    game_1_result = play_1_game(randomly_sampled_players)
+    game_2_result = play_1_game(randomly_sampled_players)
+    game_3_result = play_1_game(randomly_sampled_players)
+    game_4_result = play_1_game(randomly_sampled_players)
+    # aggregate the scores from the 4 games
+    aggregate_scores: Dict[str, int] = {
+        player.name: 0 for player in randomly_sampled_players
+    }
+    for game_result in [game_1_result, game_2_result, game_3_result, game_4_result]:
+        if game_result is not None:
+            for player_name, score in game_result:
+                aggregate_scores[player_name] += score
+
+    # update the ratings based on the results of the 3 games
+    elo_rating.update_ratings(
+        [player.name for player in randomly_sampled_players],
+        [aggregate_scores[player.name] for player in randomly_sampled_players],
+    )
+
+
+# print the ratings
+for rating in elo_rating:
+    print(rating)

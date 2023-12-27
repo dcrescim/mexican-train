@@ -74,6 +74,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#game.DominoesToPlay.train_id"><code class="docutils literal notranslate"><span class="pre">DominoesToPlay.train_id</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#game.EloRating"><code class="docutils literal notranslate"><span class="pre">EloRating</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#game.EloRating.k"><code class="docutils literal notranslate"><span class="pre">EloRating.k</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.EloRating.ratings"><code class="docutils literal notranslate"><span class="pre">EloRating.ratings</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.EloRating.iter_count"><code class="docutils literal notranslate"><span class="pre">EloRating.iter_count</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.EloRating.get_expected_score"><code class="docutils literal notranslate"><span class="pre">EloRating.get_expected_score()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.EloRating.get_new_ratings_two_players"><code class="docutils literal notranslate"><span class="pre">EloRating.get_new_ratings_two_players()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.EloRating.update_ratings"><code class="docutils literal notranslate"><span class="pre">EloRating.update_ratings()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#game.MexicanTrain"><code class="docutils literal notranslate"><span class="pre">MexicanTrain</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.players"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.players</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.board"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.board</span></code></a></li>
@@ -143,6 +152,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#game.is_double"><code class="docutils literal notranslate"><span class="pre">is_double()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.log_invalid_move"><code class="docutils literal notranslate"><span class="pre">log_invalid_move()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.make_all_dominoes"><code class="docutils literal notranslate"><span class="pre">make_all_dominoes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#game.play_1_game"><code class="docutils literal notranslate"><span class="pre">play_1_game()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.random_string"><code class="docutils literal notranslate"><span class="pre">random_string()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.shift_arr"><code class="docutils literal notranslate"><span class="pre">shift_arr()</span></code></a></li>
 </ul>
@@ -286,9 +296,9 @@ be raised in the <cite>handle_player_turn</cite> method of the <cite>MexicanTrai
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>Each tuple in the list contains:</dt><dd><ul class="simple">
-<li><p><strong>Domino (Domino)</strong>: The first domino in a potential move.</p></li>
-<li><p><strong>Train ID (Optional[str])</strong>: The ID of the train on which the domino can be played or <cite>None</cite> if not applicable.</p></li>
-<li><p><strong>Is Communal (Optional[bool])</strong>: True if the move starts a communal train, False for a personal train, and None if not applicable.</p></li>
+<li><p><strong>Domino</strong> (<em>Domino</em>): The first domino in a potential move.</p></li>
+<li><p><strong>Train ID</strong> (<em>Optional[str]</em>): The ID of the train on which the domino can be played or <cite>None</cite> if not applicable.</p></li>
+<li><p><strong>Is Communal</strong> (<em>Optional[bool]</em>): True if the move starts a communal train, False for a personal train, and None if not applicable.</p></li>
 </ul>
 </dd>
 </dl>
@@ -387,9 +397,9 @@ domino/train combination in this list.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><dl class="simple">
 <dt>Each tuple in the list contains:</dt><dd><ul class="simple">
-<li><p><strong>Domino (Domino)</strong>: The first domino in a potential move.</p></li>
-<li><p><strong>Train ID (Optional[str])</strong>: The ID of the train on which the domino can be played or <cite>None</cite> if not applicable.</p></li>
-<li><p><strong>Is Communal (Optional[bool])</strong>: True if the move starts a communal train, False for a personal train, and None if not applicable.</p></li>
+<li><p><strong>Domino</strong> (<em>Domino</em>): The first domino in a potential move.</p></li>
+<li><p><strong>Train ID</strong> (<em>Optional[str]</em>): The ID of the train on which the domino can be played or <cite>None</cite> if not applicable.</p></li>
+<li><p><strong>Is Communal</strong> (<em>Optional[bool]</em>): True if the move starts a communal train, False for a personal train, and None if not applicable.</p></li>
 </ul>
 </dd>
 </dl>
@@ -497,6 +507,112 @@ domino/train combination in this list.</p>
 <dt class="sig sig-object py" id="game.DominoesToPlay.train_id">
 <span class="sig-name descname"><span class="pre">train_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#game.DominoesToPlay.train_id" title="Link to this definition"></a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="game.EloRating">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">EloRating</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bot_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#EloRating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.EloRating" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Utility class that allows us to rate the bots based on their performance
+against each other.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.EloRating.k">
+<span class="sig-name descname"><span class="pre">k</span></span><a class="headerlink" href="#game.EloRating.k" title="Link to this definition"></a></dt>
+<dd><p>The k factor to use for the Elo rating system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.EloRating.ratings">
+<span class="sig-name descname"><span class="pre">ratings</span></span><a class="headerlink" href="#game.EloRating.ratings" title="Link to this definition"></a></dt>
+<dd><p>The ratings for each bot. The key is the
+name of the bot and the value is the rating.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.EloRating.iter_count">
+<span class="sig-name descname"><span class="pre">iter_count</span></span><a class="headerlink" href="#game.EloRating.iter_count" title="Link to this definition"></a></dt>
+<dd><p>A utility variable used to iterate over the ratings. Should not be used directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.EloRating.get_expected_score">
+<span class="sig-name descname"><span class="pre">get_expected_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bot1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bot2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/game.html#EloRating.get_expected_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.EloRating.get_expected_score" title="Link to this definition"></a></dt>
+<dd><p>Returns the expected score for bot1 against bot2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bot1</strong> (<em>str</em>) – The name of the first bot.</p></li>
+<li><p><strong>bot2</strong> (<em>str</em>) – The name of the second bot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The expected score for bot1 against bot2.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.EloRating.get_new_ratings_two_players">
+<span class="sig-name descname"><span class="pre">get_new_ratings_two_players</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bot1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bot2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bot1_won</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tie</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/game.html#EloRating.get_new_ratings_two_players"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.EloRating.get_new_ratings_two_players" title="Link to this definition"></a></dt>
+<dd><p>Returns the new ratings for bot1 and bot2 after a game between the two
+bots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bot1</strong> (<em>str</em>) – The name of the first bot.</p></li>
+<li><p><strong>bot2</strong> (<em>str</em>) – The name of the second bot.</p></li>
+<li><p><strong>bot1_won</strong> (<em>Optional</em><em>[</em><em>bool</em><em>]</em>) – Whether bot1 won the game.</p></li>
+<li><p><strong>tie</strong> (<em>Optional</em><em>[</em><em>bool</em><em>]</em>) – Whether the game was a tie.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The new ratings for bot1 and bot2, respectively.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[float, float]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>Exception</strong> – If neither bot1_won nor tie is None.</p></li>
+<li><p><strong>Exception</strong> – If both bot1_won and tie are None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.EloRating.update_ratings">
+<span class="sig-name descname"><span class="pre">update_ratings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bot_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bot_scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#EloRating.update_ratings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.EloRating.update_ratings" title="Link to this definition"></a></dt>
+<dd><p>Updates the ratings for all bots based on the results of a game
+between all of the bots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bot_names</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The names of all of the bots.</p></li>
+<li><p><strong>bot_scores</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – The scores of all of the bots in the game.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -932,8 +1048,8 @@ dominoes are the dominoes played on the train with the given train_id.</p>
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><dl class="simple">
 <dt>Each tuple represents a sequence of dominoes played on a train and contains:</dt><dd><ul class="simple">
-<li><p><strong>Dominoes (List[Domino])</strong>: A list of the dominoes played on the train</p></li>
-<li><p><strong>Train Id (Optional[str])</strong>: The train id of the train the dominoes were played on</p></li>
+<li><p><strong>Dominoes</strong> (<em>List[Domino]</em>): A list of the dominoes played on the train</p></li>
+<li><p><strong>Train Id</strong> (<em>Optional[str]</em>): The train id of the train the dominoes were played on</p></li>
 </ul>
 </dd>
 </dl>
@@ -1458,6 +1574,30 @@ the set, and therefore the size of the set.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[Domino]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.play_1_game">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">play_1_game</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">players</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#game.MexicanTrainBot" title="game.MexicanTrainBot"><span class="pre">MexicanTrainBot</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#play_1_game"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.play_1_game" title="Link to this definition"></a></dt>
+<dd><p>Plays a single game between the given players.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>players</strong> (<em>List</em><em>[</em><a class="reference internal" href="#game.MexicanTrainBot" title="game.MexicanTrainBot"><em>MexicanTrainBot</em></a><em>]</em>) – The players in the game.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>The results of the game if there was a winner, None otherwise. If there was a winner, each tuple in the list contains:</dt><dd><ul class="simple">
+<li><p><strong>Player Name</strong> (<em>str</em>) – The name of the player.</p></li>
+<li><p><strong>Player Score</strong> (<em>int</em>) – The score of the player.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Tuple[str, int]] | None</p>
 </dd>
 </dl>
 </dd></dl>

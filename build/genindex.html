@@ -81,6 +81,7 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -173,12 +174,14 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="module.html#game.Continuation.end_val">end_val (game.Continuation attribute)</a>
+      <li><a href="module.html#game.EloRating">EloRating (class in game)</a>
 </li>
-      <li><a href="module.html#game.Move.ends_in_double">ends_in_double (game.Move property)</a>
+      <li><a href="module.html#game.Continuation.end_val">end_val (game.Continuation attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="module.html#game.Move.ends_in_double">ends_in_double (game.Move property)</a>
+</li>
       <li><a href="module.html#game.Train.ends_in_double">ends_in_double() (game.Train method)</a>
 </li>
       <li><a href="module.html#game.Board.engine">engine (game.Board attribute)</a>
@@ -200,13 +203,17 @@
 </li>
       <li><a href="module.html#game.Board.get_continuations">get_continuations() (game.Board method)</a>
 </li>
+      <li><a href="module.html#game.Train.get_end_value">get_end_value() (game.Train method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="module.html#game.Train.get_end_value">get_end_value() (game.Train method)</a>
+      <li><a href="module.html#game.EloRating.get_expected_score">get_expected_score() (game.EloRating method)</a>
 </li>
       <li><a href="module.html#game.MexicanTrain.get_hand_size">get_hand_size() (game.MexicanTrain method)</a>
 </li>
       <li><a href="module.html#game.Player.get_highest_double">get_highest_double() (game.Player method)</a>
+</li>
+      <li><a href="module.html#game.EloRating.get_new_ratings_two_players">get_new_ratings_two_players() (game.EloRating method)</a>
 </li>
       <li><a href="module.html#game.Board.get_open_trains">get_open_trains() (game.Board method)</a>
 </li>
@@ -241,6 +248,16 @@
       <li><a href="module.html#game.Train.is_open">is_open (game.Train attribute)</a>
 </li>
       <li><a href="module.html#game.Train.is_open_for_player">is_open_for_player() (game.Train method)</a>
+</li>
+      <li><a href="module.html#game.EloRating.iter_count">iter_count (game.EloRating attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="module.html#game.EloRating.k">k (game.EloRating attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -317,6 +334,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="module.html#game.play_1_game">play_1_game() (in module game)</a>
+</li>
       <li><a href="module.html#game.Player">Player (class in game)</a>
 </li>
       <li><a href="module.html#game.MexicanTrain.player_agents">player_agents (game.MexicanTrain attribute)</a>
@@ -337,9 +356,11 @@
 </li>
       <li><a href="module.html#game.random_string">random_string() (in module game)</a>
 </li>
+      <li><a href="module.html#game.RandomPlayerAgent">RandomPlayerAgent (class in game)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="module.html#game.RandomPlayerAgent">RandomPlayerAgent (class in game)</a>
+      <li><a href="module.html#game.EloRating.ratings">ratings (game.EloRating attribute)</a>
 </li>
       <li><a href="module.html#game.Player.remove_domino">remove_domino() (game.Player method)</a>
 </li>
@@ -402,6 +423,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="module.html#game.Board.unfulfilled_double_value">unfulfilled_double_value (game.Board property)</a>
+</li>
+      <li><a href="module.html#game.EloRating.update_ratings">update_ratings() (game.EloRating method)</a>
 </li>
   </ul></td>
 </tr></table>
