@@ -1282,6 +1282,12 @@ class MexicanTrain:
                     return False
             return True
 
+        # don't let the player end their first turn in a double, whether or
+        # not they can fulfill it (this is for the variant of the game
+        # we are playing)
+        if is_first and proposed_move.ends_in_double:
+            return False
+
         # don't let the player end their turn in a double they are able to
         # fulfill
         if proposed_move.ends_in_double:
