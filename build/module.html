@@ -83,6 +83,17 @@
 <li class="toctree-l3"><a class="reference internal" href="#game.EloRating.update_ratings"><code class="docutils literal notranslate"><span class="pre">EloRating.update_ratings()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#game.GameLogEntry"><code class="docutils literal notranslate"><span class="pre">GameLogEntry</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.domino_played"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.domino_played</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.is_new_mexican_train"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.is_new_mexican_train</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.is_new_personal_train"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.is_new_personal_train</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.picked_up_domino"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.picked_up_domino</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.player_id"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.player_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.row_id"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.row_id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.train_played_on"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.train_played_on</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.turn_id"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.turn_id</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#game.MexicanTrain"><code class="docutils literal notranslate"><span class="pre">MexicanTrain</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.players"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.players</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.board"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.board</span></code></a></li>
@@ -93,6 +104,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.player_agents"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.player_agents</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.random_seed"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.random_seed</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.dominoes"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.dominoes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.game_log"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.game_log</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.add_player"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.add_player()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.add_to_trains"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.add_to_trains()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.check_if_player_can_fulfill_double"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.check_if_player_can_fulfill_double()</span></code></a></li>
@@ -617,6 +629,53 @@ between all of the bots.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="game.GameLogEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">GameLogEntry</span></span><a class="reference internal" href="_modules/game.html#GameLogEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.GameLogEntry" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>Typed dictionary representing an entry in the game log.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.domino_played">
+<span class="sig-name descname"><span class="pre">domino_played</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#game.GameLogEntry.domino_played" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.is_new_mexican_train">
+<span class="sig-name descname"><span class="pre">is_new_mexican_train</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#game.GameLogEntry.is_new_mexican_train" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.is_new_personal_train">
+<span class="sig-name descname"><span class="pre">is_new_personal_train</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#game.GameLogEntry.is_new_personal_train" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.picked_up_domino">
+<span class="sig-name descname"><span class="pre">picked_up_domino</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#game.GameLogEntry.picked_up_domino" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.player_id">
+<span class="sig-name descname"><span class="pre">player_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#game.GameLogEntry.player_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.row_id">
+<span class="sig-name descname"><span class="pre">row_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#game.GameLogEntry.row_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.train_played_on">
+<span class="sig-name descname"><span class="pre">train_played_on</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#game.GameLogEntry.train_played_on" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.turn_id">
+<span class="sig-name descname"><span class="pre">turn_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#game.GameLogEntry.turn_id" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="game.MexicanTrain">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">MexicanTrain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#MexicanTrain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.MexicanTrain" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -718,6 +777,17 @@ players, a board, and a turn counter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List[Domino]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.MexicanTrain.game_log">
+<span class="sig-name descname"><span class="pre">game_log</span></span><a class="headerlink" href="#game.MexicanTrain.game_log" title="Link to this definition"></a></dt>
+<dd><p>The log of the game.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#game.GameLogEntry" title="game.GameLogEntry">GameLogEntry</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -965,7 +1035,7 @@ inherit from this class and implement the play method.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="game.MexicanTrainBot.play">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piece_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#MexicanTrainBot.play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.MexicanTrainBot.play" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piece_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">game_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#game.GameLogEntry" title="game.GameLogEntry"><span class="pre">GameLogEntry</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#MexicanTrainBot.play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.MexicanTrainBot.play" title="Link to this definition"></a></dt>
 <dd><p>The method to choose a <cite>Move</cite> to play. All player agents must implement
 this method.</p>
 </dd></dl>
@@ -1280,7 +1350,7 @@ of dominoes to play.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="game.RandomPlayerAgent.play">
-<span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piece_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#RandomPlayerAgent.play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.RandomPlayerAgent.play" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piece_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">game_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#game.GameLogEntry" title="game.GameLogEntry"><span class="pre">GameLogEntry</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#RandomPlayerAgent.play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.RandomPlayerAgent.play" title="Link to this definition"></a></dt>
 <dd><p>Chooses a random valid move to play when it is the bot’s turn.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1289,6 +1359,7 @@ of dominoes to play.</p>
 <li><p><strong>board</strong> (<a class="reference internal" href="#game.Board" title="game.Board"><em>Board</em></a>) – The board in the game.</p></li>
 <li><p><strong>is_first</strong> (<em>bool</em>) – Whether it is the first turn of the game.</p></li>
 <li><p><strong>piece_counts</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>]</em>) – The number of dominoes each player has left.</p></li>
+<li><p><strong>game_log</strong> (<em>List</em><em>[</em><a class="reference internal" href="#game.GameLogEntry" title="game.GameLogEntry"><em>GameLogEntry</em></a><em>]</em>) – The game log.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
