@@ -22,6 +22,11 @@ Test Your Bot: At the bottom of that file you will see me create a game with 4 r
 
 The competition starts January 1st, and ends on January 17th.
 
+## Documentation
+The code itself should be well commented and use easy-to-understand naming conventions, but if you want a quick reference to understand what a given class or function is doing, you can read the documentation by opening `build/index.html` in your browser.
+
+If you make updates to the code, please update the docstrings accordingly, install sphinx, and build the documentation by running `sphinx-build -b html source build` from the root of the project.
+
 ## Rules and Guidelines
 
 Fair Play: No hacking or unfair tactics. The goal is to have fun and learn.
