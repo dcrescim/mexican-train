@@ -167,6 +167,9 @@ class Board:
     def __init__(self, trains: List[Train] = [], engine: Optional[Domino] = None):
         self.trains = trains
         self.engine = engine
+        self.contains_unfulfilled_double: bool = False
+        self.unfulfilled_double_value: Optional[int] = None
+        self.unfulfilled_double_train_id: Optional[str] = None
 
     def get_open_trains(self, player_id: str) -> List[Train]:
         return [train for train in self.trains if train.is_open_for_player(player_id)]
@@ -189,7 +192,17 @@ class Board:
         """
         for train in self.trains:
             if train.ends_in_double():
+                # these values should already be set correctly, so this is
+                # likely redundant, but it's here just in case
+                self.contains_unfulfilled_double = True
+                self.unfulfilled_double_value = train.get_end_value()
+                self.unfulfilled_double_train_id = train.id
                 return train
+        # these values should already be set correctly, so this is
+        # likely redundant, but it's here just in case
+        self.contains_unfulfilled_double = False
+        self.unfulfilled_double_value = None
+        self.unfulfilled_double_train_id = None
         return None
 
     def make_starting_choices_for_player(
@@ -333,6 +346,22 @@ class MexicanTrain:
                 return False
         return True
 
+    def check_if_player_can_fullfill_double(self, player: Player) -> bool:
+        """
+        Checks if the player has a domino that can fulfill the double
+        currently on the board.
+        """
+        if not self.board.contains_unfulfilled_double:
+            raise Exception("No unfulfilled double")
+        if self.board.unfulfilled_double_value is None:
+            raise Exception("No unfulfilled double value")
+        for domino in player.dominoes:
+            if domino[0] == self.board.unfulfilled_double_value:
+                return True
+            if domino[1] == self.board.unfulfilled_double_value:
+                return True
+        return False
+
     def check_valid_move(
         self, player: Player, proposed_move: Optional[Move], is_first: bool = False
     ) -> bool:
@@ -371,9 +400,31 @@ class MexicanTrain:
                 return True
         return False
 
+    def update_board_unfulfilled_double_status(
+        self, move: Move, new_train_id: Optional[str]
+    ) -> None:
+        train_ends_in_double_after_move = is_double(move[0][-1])
+        if train_ends_in_double_after_move:
+            train_id_with_double = move[1]
+            if train_id_with_double is None:
+                if new_train_id is None:
+                    raise Exception("No train id provided for new train")
+                train_id_with_double = new_train_id
+            self.board.contains_unfulfilled_double = True
+            self.board.unfulfilled_double_value = move[0][-1][1]
+            self.board.unfulfilled_double_train_id = train_id_with_double
+        else:
+            self.board.contains_unfulfilled_double = False
+            self.board.unfulfilled_double_value = None
+            self.board.unfulfilled_double_train_id = None
+
     def add_to_train(self, player: Player, move: Move) -> None:
         """
         Adds the dominoes in the move to the train specified by the move.
+
+        Updates the board's `contains_unfulfilled_double`,
+        `unfulfilled_double_value`, and `unfulfilled_double_train_id` fields
+        if appropriate.
         """
         (append_dominoes, train_id) = move
 
@@ -383,23 +434,29 @@ class MexicanTrain:
             for train in self.board.trains:
                 # You have a train, so make the Mexican Train
                 if train.player_id == player.id:
-                    self.board.trains.append(
-                        Train(dominoes=append_dominoes, player_id=None)
+                    communal_mexican_train = Train(
+                        dominoes=append_dominoes, player_id=None
                     )
+                    self.board.trains.append(communal_mexican_train)
                     player.remove_dominoes(append_dominoes)
+                    self.update_board_unfulfilled_double_status(
+                        move, communal_mexican_train.id
+                    )
                     return
             # You don't have a train, so make a personal one
-            self.board.trains.append(
-                Train(dominoes=append_dominoes, player_id=player.id)
-            )
+            personal_train = Train(dominoes=append_dominoes, player_id=player.id)
+            self.board.trains.append(personal_train)
             player.remove_dominoes(append_dominoes)
+            self.update_board_unfulfilled_double_status(move, personal_train.id)
 
         for train in self.board.trains:
             if train.id == train_id:
                 train.add_dominoes(append_dominoes)
                 player.remove_dominoes(append_dominoes)
-                if train.player_id == player.id:
+                train_ends_in_double_after_move = is_double(move[0][-1])
+                if train.player_id == player.id and not train_ends_in_double_after_move:
                     self.board.close_train(player)
+                self.update_board_unfulfilled_double_status(move, None)
                 return
 
     def set_engine(self) -> bool:
