@@ -1038,7 +1038,7 @@ class Board:
                 }
             )
 
-        if not board_has_communal_train:
+        if player_has_train and (not board_has_communal_train):
             if self.engine is None:
                 raise Exception("No engine in the train")
             choices.append(
@@ -1656,6 +1656,7 @@ class MexicanTrain:
         )
         is_valid = self.check_valid_move(player, move, self.is_first)
         if not is_valid:
+            log_invalid_move(self.board, player, move)
             raise Exception("Invalid move")
         if move is not None:
             self.perform_move(player, move, self.is_first)
@@ -1995,6 +1996,16 @@ class RandomPlayerAgent(MexicanTrainBot):
             Optional[Move]: The move to play.
         """
         choices = board.get_choices(player)
+
+        # if it's the first turn the player can't create a mexican train
+        # or end their turn in a double
+        if is_first:
+            choices = [
+                choice
+                for choice in choices
+                if ((not is_double(choice[0])) and (not choice[2]))
+            ]
+
         if len(choices) == 0:
             return None
 
