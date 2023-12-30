@@ -84,6 +84,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#game.GameLogEntry"><code class="docutils literal notranslate"><span class="pre">GameLogEntry</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.did_set_engine"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.did_set_engine</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.domino_played"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.domino_played</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.is_new_mexican_train"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.is_new_mexican_train</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.GameLogEntry.is_new_personal_train"><code class="docutils literal notranslate"><span class="pre">GameLogEntry.is_new_personal_train</span></code></a></li>
@@ -110,6 +111,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.check_if_player_can_fulfill_double"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.check_if_player_can_fulfill_double()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.check_valid_move"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.check_valid_move()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.deal"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.deal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.draw_pieces_until_engine_is_set"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.draw_pieces_until_engine_is_set()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.get_hand_size"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.get_hand_size()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.handle_player_turn"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.handle_player_turn()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.MexicanTrain.perform_move"><code class="docutils literal notranslate"><span class="pre">MexicanTrain.perform_move()</span></code></a></li>
@@ -132,6 +134,18 @@
 <li class="toctree-l3"><a class="reference internal" href="#game.Move.ends_in_double"><code class="docutils literal notranslate"><span class="pre">Move.ends_in_double</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.Move.starts_with_double"><code class="docutils literal notranslate"><span class="pre">Move.starts_with_double</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#game.Move.train_ids_played_on"><code class="docutils literal notranslate"><span class="pre">Move.train_ids_played_on</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#game.NormalPersonPlayerAgent"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.name"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.check_if_there_is_a_player_who_could_win_scarily_soon"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.check_if_there_is_a_player_who_could_win_scarily_soon()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.construct_first_turn_sequence"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.construct_first_turn_sequence()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.find_double_that_closes_train"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.find_double_that_closes_train()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.find_non_double_that_closes_train"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.find_non_double_that_closes_train()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.get_highest_double_player_can_play"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.get_highest_double_player_can_play()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.get_highest_single_point_total_domino_player_can_play"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.get_highest_single_point_total_domino_player_can_play()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.get_move_that_plays_highest_point_total_sequence"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.get_move_that_plays_highest_point_total_sequence()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#game.NormalPersonPlayerAgent.play"><code class="docutils literal notranslate"><span class="pre">NormalPersonPlayerAgent.play()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#game.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a><ul>
@@ -160,13 +174,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#game.Train.is_open_for_player"><code class="docutils literal notranslate"><span class="pre">Train.is_open_for_player()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#game.average_elo_ratings_without_outliers"><code class="docutils literal notranslate"><span class="pre">average_elo_ratings_without_outliers()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.canonical"><code class="docutils literal notranslate"><span class="pre">canonical()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.is_double"><code class="docutils literal notranslate"><span class="pre">is_double()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.log_invalid_move"><code class="docutils literal notranslate"><span class="pre">log_invalid_move()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.make_all_dominoes"><code class="docutils literal notranslate"><span class="pre">make_all_dominoes()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.play_1_game"><code class="docutils literal notranslate"><span class="pre">play_1_game()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.random_string"><code class="docutils literal notranslate"><span class="pre">random_string()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#game.run_simulation_and_produce_ratings"><code class="docutils literal notranslate"><span class="pre">run_simulation_and_produce_ratings()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#game.shift_arr"><code class="docutils literal notranslate"><span class="pre">shift_arr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#game.update_ratings"><code class="docutils literal notranslate"><span class="pre">update_ratings()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -310,7 +327,7 @@ be raised in the <cite>handle_player_turn</cite> method of the <cite>MexicanTrai
 <dt>Each tuple in the list contains:</dt><dd><ul class="simple">
 <li><p><strong>Domino</strong> (<em>Domino</em>): The first domino in a potential move.</p></li>
 <li><p><strong>Train ID</strong> (<em>Optional[str]</em>): The ID of the train on which the domino can be played or <cite>None</cite> if not applicable.</p></li>
-<li><p><strong>Is Communal</strong> (<em>Optional[bool]</em>): True if the move starts a communal train, False for a personal train, and None if not applicable.</p></li>
+<li><p><strong>Starts Communal Train</strong> (<em>Optional[bool]</em>): True if the move starts a communal train, False for a personal train, and None if not applicable.</p></li>
 </ul>
 </dd>
 </dl>
@@ -411,7 +428,7 @@ domino/train combination in this list.</p>
 <dt>Each tuple in the list contains:</dt><dd><ul class="simple">
 <li><p><strong>Domino</strong> (<em>Domino</em>): The first domino in a potential move.</p></li>
 <li><p><strong>Train ID</strong> (<em>Optional[str]</em>): The ID of the train on which the domino can be played or <cite>None</cite> if not applicable.</p></li>
-<li><p><strong>Is Communal</strong> (<em>Optional[bool]</em>): True if the move starts a communal train, False for a personal train, and None if not applicable.</p></li>
+<li><p><strong>Starts Communal Train</strong> (<em>Optional[bool]</em>): True if the move starts a communal train, False for a personal train, and None if not applicable.</p></li>
 </ul>
 </dd>
 </dl>
@@ -633,6 +650,11 @@ between all of the bots.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">GameLogEntry</span></span><a class="reference internal" href="_modules/game.html#GameLogEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.GameLogEntry" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
 <p>Typed dictionary representing an entry in the game log.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.GameLogEntry.did_set_engine">
+<span class="sig-name descname"><span class="pre">did_set_engine</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#game.GameLogEntry.did_set_engine" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="game.GameLogEntry.domino_played">
 <span class="sig-name descname"><span class="pre">domino_played</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#game.GameLogEntry.domino_played" title="Link to this definition"></a></dt>
@@ -874,6 +896,23 @@ player is allowed to make the proposed move.</p>
 <dt class="sig sig-object py" id="game.MexicanTrain.deal">
 <span class="sig-name descname"><span class="pre">deal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#MexicanTrain.deal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.MexicanTrain.deal" title="Link to this definition"></a></dt>
 <dd><p>Deals the dominoes to the players.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.MexicanTrain.draw_pieces_until_engine_is_set">
+<span class="sig-name descname"><span class="pre">draw_pieces_until_engine_is_set</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/game.html#MexicanTrain.draw_pieces_until_engine_is_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.MexicanTrain.draw_pieces_until_engine_is_set" title="Link to this definition"></a></dt>
+<dd><p>If the engine isn’t set initially, it means no player has
+a double. In this case, each player draws a domino until
+someone has a double, at which point that player sets the
+engine and goes first.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the engine was set, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1182,6 +1221,204 @@ Does not include <cite>None</cite> if the player is starting a new train.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">NormalPersonPlayerAgent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#game.MexicanTrainBot" title="game.MexicanTrainBot"><code class="xref py py-class docutils literal notranslate"><span class="pre">MexicanTrainBot</span></code></a></p>
+<p>Representation of a Mexican Train Bot that plays by a hard-coded set
+of rules that are probably fairly representative of how a normal person
+would play the game.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#game.NormalPersonPlayerAgent.name" title="Link to this definition"></a></dt>
+<dd><p>The name of the bot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.check_if_there_is_a_player_who_could_win_scarily_soon">
+<span class="sig-name descname"><span class="pre">check_if_there_is_a_player_who_could_win_scarily_soon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">piece_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent.check_if_there_is_a_player_who_could_win_scarily_soon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent.check_if_there_is_a_player_who_could_win_scarily_soon" title="Link to this definition"></a></dt>
+<dd><p>Checks if there is a player who has 2 or fewer dominoes while the current
+player has more than 2 OR if there is a player who has 3 dominoes while
+the current player has more than 5.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="#game.Player" title="game.Player"><em>Player</em></a>) – The player whose turn it is.</p></li>
+<li><p><strong>piece_counts</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>]</em>) – The number of dominoes each player has left.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if there is a player who could win the game in the next turn, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.construct_first_turn_sequence">
+<span class="sig-name descname"><span class="pre">construct_first_turn_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent.construct_first_turn_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent.construct_first_turn_sequence" title="Link to this definition"></a></dt>
+<dd><p>Constructs a valid move for the first turn of the game using a naive
+approach to construct the “longest possible” valid sequence.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="#game.Player" title="game.Player"><em>Player</em></a>) – The player whose turn it is.</p></li>
+<li><p><strong>board</strong> (<a class="reference internal" href="#game.Board" title="game.Board"><em>Board</em></a>) – The board in the game.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The move to play.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#game.Move" title="game.Move">Move</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the board has no engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.find_double_that_closes_train">
+<span class="sig-name descname"><span class="pre">find_double_that_closes_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent.find_double_that_closes_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent.find_double_that_closes_train" title="Link to this definition"></a></dt>
+<dd><p>Checks the possible choices a player has and finds the first double
+that can be played AND fulfilled on the player’s personal train.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="#game.Player" title="game.Player"><em>Player</em></a>) – The player whose turn it is.</p></li>
+<li><p><strong>board</strong> (<a class="reference internal" href="#game.Board" title="game.Board"><em>Board</em></a>) – The board in the game.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The move to play, or None if no such move exists in which a fulfilled double closes the player’s train.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#game.Move" title="game.Move">Move</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.find_non_double_that_closes_train">
+<span class="sig-name descname"><span class="pre">find_non_double_that_closes_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent.find_non_double_that_closes_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent.find_non_double_that_closes_train" title="Link to this definition"></a></dt>
+<dd><p>Checks the possible choices a player has and finds the first non-double
+that closes the player’s train.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="#game.Player" title="game.Player"><em>Player</em></a>) – The player whose turn it is.</p></li>
+<li><p><strong>board</strong> (<a class="reference internal" href="#game.Board" title="game.Board"><em>Board</em></a>) – The board in the game.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The move to play, or None if no such move exists in which a non-double closes the player’s train.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#game.Move" title="game.Move">Move</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.get_highest_double_player_can_play">
+<span class="sig-name descname"><span class="pre">get_highest_double_player_can_play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent.get_highest_double_player_can_play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent.get_highest_double_player_can_play" title="Link to this definition"></a></dt>
+<dd><p>Checks the possible choices a player has. Looks at the highest point
+total double the player can play.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="#game.Player" title="game.Player"><em>Player</em></a>) – The player whose turn it is.</p></li>
+<li><p><strong>board</strong> (<a class="reference internal" href="#game.Board" title="game.Board"><em>Board</em></a>) – The board in the game.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The move to play.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#game.Move" title="game.Move">Move</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.get_highest_single_point_total_domino_player_can_play">
+<span class="sig-name descname"><span class="pre">get_highest_single_point_total_domino_player_can_play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent.get_highest_single_point_total_domino_player_can_play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent.get_highest_single_point_total_domino_player_can_play" title="Link to this definition"></a></dt>
+<dd><p>Checks the possible choices a player has. Looks at the highest point total
+single domino the player can play.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="#game.Player" title="game.Player"><em>Player</em></a>) – The player whose turn it is.</p></li>
+<li><p><strong>board</strong> (<a class="reference internal" href="#game.Board" title="game.Board"><em>Board</em></a>) – The board in the game.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The move to play.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#game.Move" title="game.Move">Move</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.get_move_that_plays_highest_point_total_sequence">
+<span class="sig-name descname"><span class="pre">get_move_that_plays_highest_point_total_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent.get_move_that_plays_highest_point_total_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent.get_move_that_plays_highest_point_total_sequence" title="Link to this definition"></a></dt>
+<dd><p>Checks the possible choices a player has and finds the highest point
+total sequence the player can play. This ignores the possibility that
+if the player plays an unfulfilled double, then they might draw from
+the boneyard and still be able to unfulfill the double, which would
+mean the total decrease in points in their hand is less than the
+point total of the sequence they played.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="#game.Player" title="game.Player"><em>Player</em></a>) – The player whose turn it is.</p></li>
+<li><p><strong>board</strong> (<a class="reference internal" href="#game.Board" title="game.Board"><em>Board</em></a>) – The board in the game.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The move to play.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#game.Move" title="game.Move">Move</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="game.NormalPersonPlayerAgent.play">
+<span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Player" title="game.Player"><span class="pre">Player</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">board</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.Board" title="game.Board"><span class="pre">Board</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">piece_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">game_log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#game.GameLogEntry" title="game.GameLogEntry"><span class="pre">GameLogEntry</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#game.Move" title="game.Move"><span class="pre">Move</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#NormalPersonPlayerAgent.play"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.NormalPersonPlayerAgent.play" title="Link to this definition"></a></dt>
+<dd><p>Chooses a valid move to play when it is the bot’s turn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="#game.Player" title="game.Player"><em>Player</em></a>) – The player whose turn it is.</p></li>
+<li><p><strong>board</strong> (<a class="reference internal" href="#game.Board" title="game.Board"><em>Board</em></a>) – The board in the game.</p></li>
+<li><p><strong>is_first</strong> (<em>bool</em>) – Whether it is the first turn of the game.</p></li>
+<li><p><strong>piece_counts</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em><em>]</em>) – The number of dominoes each player has left.</p></li>
+<li><p><strong>game_log</strong> (<em>List</em><em>[</em><a class="reference internal" href="#game.GameLogEntry" title="game.GameLogEntry"><em>GameLogEntry</em></a><em>]</em>) – The game log.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The move to play.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#game.Move" title="game.Move">Move</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1566,6 +1803,24 @@ of dominoes to play.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="game.average_elo_ratings_without_outliers">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">average_elo_ratings_without_outliers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings_by_bot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/game.html#average_elo_ratings_without_outliers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.average_elo_ratings_without_outliers" title="Link to this definition"></a></dt>
+<dd><p>Returns the average ELO rating for each bot after removing the 2 highest and
+2 lowest rating for each bot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ratings_by_bot</strong> (<em>Dict</em><em>[</em><em>str</em><em>,</em><em>List</em><em>[</em><em>float</em><em>]</em><em>]</em>) – The ELO ratings for each bot.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The average ELO rating for each bot after removing the highest and lowest rating for each bot.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str,float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="game.canonical">
 <span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">canonical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domino</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/game.html#canonical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.canonical" title="Link to this definition"></a></dt>
 <dd><p>Returns the domino in canonical form, i.e. (0, 1) instead of (1, 0)
@@ -1702,6 +1957,30 @@ the set, and therefore the size of the set.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="game.run_simulation_and_produce_ratings">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">run_simulation_and_produce_ratings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player_bots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#game.MexicanTrainBot" title="game.MexicanTrainBot"><span class="pre">MexicanTrainBot</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_games</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1500</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/game.html#run_simulation_and_produce_ratings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.run_simulation_and_produce_ratings" title="Link to this definition"></a></dt>
+<dd><p>Runs a simulation of 4 * <cite>n_games</cite> individual games broken up into <cite>n_games</cite> games of
+4 rounds each. After each round, the ratings are updated based on the
+results of the 4 games. The number of players and actual players in each
+game are chosen randomly. Returns the ELO ratings of each bot at the end of
+the simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player_bots</strong> (<em>List</em><em>[</em><a class="reference internal" href="#game.MexicanTrainBot" title="game.MexicanTrainBot"><em>MexicanTrainBot</em></a><em>]</em>) – The players in the game.</p></li>
+<li><p><strong>n_games</strong> (<em>int</em>) – The number of games to play.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ELO ratings of each bot at the end of the simulation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#game.EloRating" title="game.EloRating">EloRating</a> (<a class="reference internal" href="#game.EloRating" title="game.EloRating">EloRating</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="game.shift_arr">
 <span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">shift_arr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/game.html#shift_arr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.shift_arr" title="Link to this definition"></a></dt>
 <dd><p>Shifts the first n elements of an array to the end (not in place).</p>
@@ -1731,6 +2010,11 @@ the set, and therefore the size of the set.</p>
 </pre></div>
 </div>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="game.update_ratings">
+<span class="sig-prename descclassname"><span class="pre">game.</span></span><span class="sig-name descname"><span class="pre">update_ratings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ratings_by_bot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elo_rating</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#game.EloRating" title="game.EloRating"><span class="pre">EloRating</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/game.html#update_ratings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#game.update_ratings" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 
