@@ -21,7 +21,6 @@ class Continuation(TypedDict):
     ]  # Indicates whether this starts a new Mexican train.
 
 
-
 # We create a class for Move to handle more nuanced cases
 # like when a player has their first turn and there is an
 # unfulfilled double on the board. In this case, a valid
@@ -156,4 +155,3 @@ def is_double(domino: Domino) -> bool:
         False
     """
     return domino[0] == domino[1]
-

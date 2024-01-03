@@ -6,6 +6,8 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
 from mexican_train.domino_types import GameLogEntry
+from mexican_train.player import Player
+from mexican_train.board import Board
 from abc import ABC, abstractmethod
 from typing import Tuple, Optional, List, Any
 
@@ -36,8 +38,8 @@ class MexicanTrainBot(ABC):
     @abstractmethod
     def play(
         self,
-        player,
-        board,
+        player: Player,
+        board: Board,
         is_first: bool,
         piece_counts: List[Tuple[str, int]],
         game_log: List[GameLogEntry],
@@ -47,4 +49,3 @@ class MexicanTrainBot(ABC):
         this method.
         """
         pass
-

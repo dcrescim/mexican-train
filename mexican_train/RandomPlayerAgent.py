@@ -86,8 +86,7 @@ class RandomPlayerAgent(MexicanTrainBot):
             dominoes_used_in_move = set(
                 [canonical(d) for d in move.all_dominoes_played]
             )
-            player_remaining_dominoes = list(
-                pre_move_dominoes - dominoes_used_in_move)
+            player_remaining_dominoes = list(pre_move_dominoes - dominoes_used_in_move)
             random.shuffle(player_remaining_dominoes)
             tile_to_fullfill_double = None
             for domino in player_remaining_dominoes:

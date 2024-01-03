@@ -149,4 +149,3 @@ class Player:
         A string representation of the player that can be printed to the console
         """
         return str({"id": self.id, "dominoes": self.dominoes})
-

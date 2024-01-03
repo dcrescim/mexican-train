@@ -176,11 +176,9 @@ class Move:
         sequences_dict: Dict[str, List[Domino]] = {}
         for sequence in self.sequences_to_play:
             if sequence["train_id"] not in sequences_dict:
-                sequences_dict[str(sequence["train_id"])
-                               ] = sequence["dominoes"]
+                sequences_dict[str(sequence["train_id"])] = sequence["dominoes"]
             else:
-                sequences_dict[sequence["train_id"]].extend(
-                    sequence["dominoes"])
+                sequences_dict[sequence["train_id"]].extend(sequence["dominoes"])
         output: List[Tuple[List[Domino], Optional[str]]] = []
         for train_id, dominoes in sequences_dict.items():
             if train_id == "None":
@@ -228,4 +226,3 @@ class Move:
             str: A string representation of the move.
         """
         return str(self.sequences_to_play)
-

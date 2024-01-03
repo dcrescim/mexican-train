@@ -1,5 +1,6 @@
-
 from typing import List, Dict, Optional, Tuple
+
+
 class EloRating:
     """
     Utility class that allows us to rate the bots based on their performance
@@ -75,10 +76,8 @@ class EloRating:
             actual_score = 0.5
         else:
             actual_score = 0.0
-        new_bot1_rating = self.ratings[bot1] + \
-            self.k * (actual_score - expected_score)
-        new_bot2_rating = self.ratings[bot2] + \
-            self.k * (expected_score - actual_score)
+        new_bot1_rating = self.ratings[bot1] + self.k * (actual_score - expected_score)
+        new_bot2_rating = self.ratings[bot2] + self.k * (expected_score - actual_score)
         return (new_bot1_rating, new_bot2_rating)
 
     def update_ratings(self, bot_names: List[str], bot_scores: List[float]) -> None:
@@ -136,8 +135,7 @@ class EloRating:
                 - **Name** (*str*) -- The name of the bot.
                 - **Rating** (*float*) -- The ELO rating of the bot.
         """
-        sorted_ratings = sorted(self.ratings.items(),
-                                key=lambda x: x[0], reverse=True)
+        sorted_ratings = sorted(self.ratings.items(), key=lambda x: x[0], reverse=True)
         if self.iter_count >= len(self.ratings):
             self.iter_count = 0
             raise StopIteration

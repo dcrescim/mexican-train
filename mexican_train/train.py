@@ -123,8 +123,7 @@ class Train:
             self.dominoes.append((new_domino[1], new_domino[0]))
         else:
             raise ValueError(
-                "Cannot add domino {} to train {}".format(
-                    new_domino, self.dominoes)
+                "Cannot add domino {} to train {}".format(new_domino, self.dominoes)
             )
 
     def add_dominoes(self, dominoes: List[Domino]) -> None:
@@ -179,8 +178,7 @@ class Train:
             True
         """
         return (
-            (self.player_id is None) or (
-                self.player_id == player_id) or (self.is_open)
+            (self.player_id is None) or (self.player_id == player_id) or (self.is_open)
         )
 
     def ends_in_double(self) -> bool:
@@ -237,4 +235,3 @@ class Train:
                 "player_id": self.player_id,
             }
         )
-

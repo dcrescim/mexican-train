@@ -89,8 +89,7 @@ def run_simulation_and_produce_ratings(
         # update the ratings based on the results of the 3 games
         elo_rating.update_ratings(
             [player.name for player in randomly_sampled_players],
-            [aggregate_scores[player.name]
-                for player in randomly_sampled_players],
+            [aggregate_scores[player.name] for player in randomly_sampled_players],
         )
     return elo_rating
 

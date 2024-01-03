@@ -1,4 +1,3 @@
-
 import sys
 import os
 
@@ -13,6 +12,7 @@ from mexican_train.domino_types import GameLogEntry, is_double, canonical, Domin
 from mexican_train.move import Move
 from typing import List, Tuple, Optional, Callable
 import random
+
 
 class NormalPersonPlayerAgent(MexicanTrainBot):
     """
@@ -42,8 +42,7 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
             Exception: If the board has no engine.
         """
         if board.engine is None:
-            raise Exception(
-                "No engine found when constructing first turn sequence")
+            raise Exception("No engine found when constructing first turn sequence")
 
         starting_value = board.engine[1]
 
@@ -62,8 +61,7 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
                 if canonical(d2) != canonical(d) and d[1] in d2
             ]
         )
-        num_second_choices = [get_num_second_choices(
-            d) for d in candidate_dominoes]
+        num_second_choices = [get_num_second_choices(d) for d in candidate_dominoes]
 
         # choose the candidate domino with the most second choices
         chosen_domino = candidate_dominoes[
@@ -76,8 +74,7 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
         while True:
             end_val = sequence_of_dominoes[-1][1]
             played_dominoes = set([canonical(d) for d in sequence_of_dominoes])
-            player_remaining_dominoes = list(
-                pre_turn_dominoes - played_dominoes)
+            player_remaining_dominoes = list(pre_turn_dominoes - played_dominoes)
             next_domino_choices = [
                 d if d[0] == end_val else (d[1], d[0])
                 for d in player_remaining_dominoes
@@ -187,8 +184,7 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
                 point_totals.append(2 * value)
                 fulfill_dominoes.append(None)
             else:
-                fulfill_domino_points = [sum(d)
-                                         for d in candidates_to_fulfill_double]
+                fulfill_domino_points = [sum(d) for d in candidates_to_fulfill_double]
                 highest_point_domino_to_fulfill_double = candidates_to_fulfill_double[
                     fulfill_domino_points.index(max(fulfill_domino_points))
                 ]
@@ -199,8 +195,7 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
         highest_point_total_double = double_choices[
             point_totals.index(max(point_totals))
         ]
-        fulfill_domino = fulfill_dominoes[point_totals.index(
-            max(point_totals))]
+        fulfill_domino = fulfill_dominoes[point_totals.index(max(point_totals))]
         return Move(
             sequences_to_play=[
                 {
@@ -232,11 +227,9 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
             Optional[Move]: The move to play.
         """
         best_single_domino_move = (
-            self.get_highest_single_point_total_domino_player_can_play(
-                player, board)
+            self.get_highest_single_point_total_domino_player_can_play(player, board)
         )
-        best_double_move = self.get_highest_double_player_can_play(
-            player, board)
+        best_double_move = self.get_highest_double_player_can_play(player, board)
         if best_single_domino_move is None and best_double_move is None:
             return None
         if best_single_domino_move is None:
@@ -395,8 +388,7 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
         # they should close their train if it is open and they have a domino
         # that can close it, or otherwise play a random move.
         if player_train_is_open:
-            double_that_closes_train = self.find_double_that_closes_train(
-                player, board)
+            double_that_closes_train = self.find_double_that_closes_train(player, board)
             non_double_that_closes_train = self.find_non_double_that_closes_train(
                 player, board
             )
@@ -441,8 +433,7 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
             ]
             if len(dominoes_that_can_fulfill_double) > 0:
                 random.shuffle(dominoes_that_can_fulfill_double)
-                sequence_of_dominoes.append(
-                    dominoes_that_can_fulfill_double[0])
+                sequence_of_dominoes.append(dominoes_that_can_fulfill_double[0])
         return Move(
             sequences_to_play=[
                 {
@@ -452,4 +443,3 @@ class NormalPersonPlayerAgent(MexicanTrainBot):
                 }
             ]
         )
-

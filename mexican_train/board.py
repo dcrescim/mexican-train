@@ -9,7 +9,6 @@ from typing import Tuple, Optional, List
 from mexican_train.domino_types import Domino, Continuation
 from mexican_train.train import Train
 from mexican_train.player import Player
-from mexican_train.move import Move
 
 
 class Board:
@@ -202,8 +201,7 @@ class Board:
                 - **Train ID** (*Optional[str]*): The ID of the train on which the domino can be played or `None` if not applicable.
                 - **Starts Communal Train** (*Optional[bool]*): True if the move starts a communal train, False for a personal train, and None if not applicable.
         """
-        all_starter_choices: List[Tuple[Domino,
-                                        Optional[str], Optional[bool]]] = []
+        all_starter_choices: List[Tuple[Domino, Optional[str], Optional[bool]]] = []
         for continuation in continuations:
             end_val = continuation["end_val"]
             train_id = continuation["train_id"]
@@ -377,4 +375,3 @@ class Board:
             str: A representation of the board.
         """
         return str({"trains": self.trains, "engine": self.engine})
-

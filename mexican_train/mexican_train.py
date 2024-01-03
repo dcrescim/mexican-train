@@ -7,7 +7,14 @@ sys.path.insert(0, parent_dir)
 
 import random
 from typing import Tuple, Optional, List
-from mexican_train.domino_types import Domino, GameLogEntry, make_all_dominoes, canonical, is_double, shift_arr
+from mexican_train.domino_types import (
+    Domino,
+    GameLogEntry,
+    make_all_dominoes,
+    canonical,
+    is_double,
+    shift_arr,
+)
 from mexican_train.train import Train
 from mexican_train.player import Player
 from mexican_train.MexicanTrainBot import MexicanTrainBot
@@ -196,8 +203,7 @@ class MexicanTrain:
                 [canonical(d) for d in proposed_move.all_dominoes_played]
             )
             dominoes_before_move = set([canonical(d) for d in player.dominoes])
-            player_remaining_dominoes = list(
-                dominoes_before_move - dominoes_played)
+            player_remaining_dominoes = list(dominoes_before_move - dominoes_played)
             player_can_fulfill_double = False
             for domino in player_remaining_dominoes:
                 if domino[0] == double_value:
@@ -349,8 +355,7 @@ class MexicanTrain:
                     if train.id == train_id:
                         train.add_dominoes(append_dominoes)
                         player.remove_dominoes(append_dominoes)
-                        train_ends_in_double_after_move = is_double(
-                            append_dominoes[-1])
+                        train_ends_in_double_after_move = is_double(append_dominoes[-1])
                         if (
                             train.player_id == player.id
                             and not train_ends_in_double_after_move
@@ -463,8 +468,7 @@ class MexicanTrain:
                 train_id_with_double = move.sequences_to_play[-1]["train_id"]
                 if train_id_with_double is None:
                     if possible_new_train_id is None:
-                        raise Exception(
-                            "No train id provided for the new train")
+                        raise Exception("No train id provided for the new train")
                     train_id_with_double = possible_new_train_id
                 double_value = move.all_dominoes_played[-1][1]
                 new_domino = self.pickup(player)
@@ -718,6 +722,7 @@ class MexicanTrain:
                 "dominoes": self.dominoes,
             }
         )
+
 
 def log_invalid_move(board: Board, player: Player, move: Optional[Move]) -> None:
     """
