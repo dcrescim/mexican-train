@@ -35,6 +35,14 @@ class MexicanTrainBot(ABC):
 
         self.name = name
 
+    def reset_attributes(self) -> None:
+        """
+        Resets the attributes of the bot before each game.
+
+        Does not have to do anything, but can be overriden in child classes.
+        """
+        return
+
     @abstractmethod
     def play(
         self,

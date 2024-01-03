@@ -63,11 +63,15 @@ class MexicanTrain:
 
     def add_player(self, agent_class: "MexicanTrainBot") -> None:
         """
-        Adds a player to the game.
+        Adds a player to the game and resets the attributes of the agent class to start
+        fresh for the new game, if the agent class has implemented  `reset_attributes` method
+        to reset the attributes (the base class `MexicanTrainBot` has implemented this method
+        to immediately return, so it's optional for the player to implement this method).
 
         Args:
             agent_class (MexicanTrainBot): The agent class for the player - this is the bot that plays the game.
         """
+        agent_class.reset_attributes()
         self.player_count += 1
         self.player_agents.append(agent_class)
         self.players.append(Player(dominoes=[], player_id=agent_class.name))
